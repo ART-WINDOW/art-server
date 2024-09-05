@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: art-server
+  profiles:
+    active: secrets
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  api:
+    ggkey: ${API_KEY}
+
