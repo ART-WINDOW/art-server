@@ -12,5 +12,6 @@ spring:
       ddl-auto: update
     show-sql: false
   api:
-    ggkey: ${API_KEY}
+    gyeonggikey: ${GYEONGGI_API_KEY}
+    gonggongkey: ${GONGGONG_API_KEY}
 

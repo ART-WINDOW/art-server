@@ -1,16 +1,31 @@
 package com.doma.artserver.domain.exhibition.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.doma.artserver.domain.museum.entity.Museum;
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
 
 @Entity
 public class Exhibition {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String title;
+
+    private String description;
+
+    private String imgUrl;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    @Enumerated
+    private ExhibitionStatus status;
+
+    @ManyToOne
+    private Museum museum;
 
 //    INST_NM	기관명
 //    TITLE	제목
@@ -27,5 +42,13 @@ public class Exhibition {
 //    HMPG_URL	홈페이지URL
 //    WRITNG_DE	작성일자
 
+//    id	Long	자동 증가하는 기본 키
+//    title	String	전시 제목 (텍스트 데이터)
+//    description	String	전시 설명 (긴 텍스트)
+//    location	String	전시 장소 (텍스트)
+//    startDate	LocalDate	전시 시작일 (날짜)
+//    endDate	LocalDate	전시 종료일 (날짜)
+//    imageUrl	String	전시 이미지 URL
+//    isActive	boolean	전시가 현재 활성화 상태인지 여부
 
 }
