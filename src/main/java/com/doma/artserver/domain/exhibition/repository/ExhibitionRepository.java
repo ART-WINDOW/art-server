@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
 
+    Exhibition findByTitle(String title);
 }

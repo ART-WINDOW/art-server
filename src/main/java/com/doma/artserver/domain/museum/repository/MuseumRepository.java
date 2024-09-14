@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MuseumRepository extends JpaRepository<Museum, Long> {
+    Museum findByName(String place);
 }
