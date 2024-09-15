@@ -1,7 +1,10 @@
 package com.doma.artserver.api.munhwa;
 
 import com.doma.artserver.api.ApiClient;
+import com.doma.artserver.api.munhwa.responsewrapper.ExhibitionResponseWrapper;
+import com.doma.artserver.api.munhwa.responsewrapper.MuseumResponseWrapper;
 import com.doma.artserver.dto.exhibition.MunwhaPortalExhibitionDTO;
+import com.doma.artserver.dto.museum.MunwhaPortalMuseumDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -36,6 +39,7 @@ public class MunwhaPortalApiClient implements ApiClient {
     public int getTotalPages() {
         String url = generateUrl(1);  // 첫 번째 페이지 호출
         String response = restTemplate.getForObject(url, String.class);
+        System.out.println(response);
 
         // XML에서 totalCount 값을 파싱하여 페이지 수 계산
         int totalCount = parseTotalCount(response);
@@ -81,26 +85,60 @@ public class MunwhaPortalApiClient implements ApiClient {
         return parseExhibitions(response);
     }
 
+    @Override
+    public List<MunwhaPortalMuseumDTO> fetchMuseums(int page) {
+        String url = generateUrl(page);
+        String response = restTemplate.getForObject(url, String.class);
+
+        // XML 파싱 로직 추가 (JAXB 또는 다른 라이브러리 이용)
+        // ExhibitionDTO 객체로 변환 후 리스트 반환
+        return parseMuseums(response);
+    }
+
     private List<MunwhaPortalExhibitionDTO> parseExhibitions(String xmlResponse) {
         List<MunwhaPortalExhibitionDTO> exhibitions = new ArrayList<>();
 
         try {
             // JAXBContext 생성
-            JAXBContext jaxbContext = JAXBContext.newInstance(MunwhaPortalExhibitionDTO.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(ExhibitionResponseWrapper.class);
 
             // Unmarshaller 생성
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
             // XML을 DTO로 변환
             StringReader reader = new StringReader(xmlResponse);
-            MunwhaPortalExhibitionDTO exhibitionDTO = (MunwhaPortalExhibitionDTO) unmarshaller.unmarshal(reader);
+            ExhibitionResponseWrapper exhibitionResponse = (ExhibitionResponseWrapper) unmarshaller.unmarshal(reader);
 
-            exhibitions.add(exhibitionDTO); // 변환된 DTO 리스트에 추가
+            exhibitions = exhibitionResponse.getExhibitions(); // 변환된 DTO 리스트에 추가
         } catch (JAXBException e) {
             e.printStackTrace(); // 예외 처리
         }
 
         return exhibitions;
     }
+
+    private List<MunwhaPortalMuseumDTO> parseMuseums(String xmlResponse) {
+        List<MunwhaPortalMuseumDTO> museums = new ArrayList<>();
+
+        try {
+            // JAXBContext 생성
+            JAXBContext jaxbContext = JAXBContext.newInstance(MuseumResponseWrapper.class);
+
+            // Unmarshaller 생성
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+            // XML을 DTO로 변환
+            StringReader reader = new StringReader(xmlResponse);
+            MuseumResponseWrapper museumResponse = (MuseumResponseWrapper) unmarshaller.unmarshal(reader);
+
+            // 변환된 DTO 리스트 반환
+            museums = museumResponse.getMuseums();
+        } catch (JAXBException e) {
+            e.printStackTrace(); // 예외 처리
+        }
+
+        return museums;
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.doma.artserver.domain.museum.entity;
 
 import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +10,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Entity
-@RequiredArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Museum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,6 @@ public class Museum {
     private String website;  // 미술관 웹사이트 URL
 
     // 1:N 관계 - 한 미술관에는 여러 전시회가 있을 수 있음
-    @OneToMany(mappedBy = "Museum")
+    @OneToMany(mappedBy = "museum")
     private List<Exhibition> exhibitions;
 }

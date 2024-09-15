@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ApiClient {
     List<MunwhaPortalExhibitionDTO> fetchExhibitions(int page);
+    List<MunwhaPortalMuseumDTO> fetchMuseums(int page);
     String generateUrl(int page);
     int getTotalPages();
 }

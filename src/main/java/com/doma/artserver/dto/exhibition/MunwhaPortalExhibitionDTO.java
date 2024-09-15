@@ -2,7 +2,9 @@ package com.doma.artserver.dto.exhibition;
 
 import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import com.doma.artserver.domain.museum.entity.Museum;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 
 @Getter @Setter
 @XmlRootElement(name = "perforList")
+@Builder
 public class MunwhaPortalExhibitionDTO {
     private String title;
     private LocalDate startDate;

@@ -2,17 +2,15 @@ package com.doma.artserver.domain.exhibition.entity;
 
 import com.doma.artserver.domain.museum.entity.Museum;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Setter @Getter
-@RequiredArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Exhibition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

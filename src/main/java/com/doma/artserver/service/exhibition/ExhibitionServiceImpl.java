@@ -41,7 +41,8 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         }
     }
 
-    private void saveExhibition(MunwhaPortalExhibitionDTO dto) {
+    @Override
+    public void saveExhibition(MunwhaPortalExhibitionDTO dto) {
         Exhibition exhibition = exhibitionRepository.findByTitle(dto.getTitle());
         exhibition.setTitle(dto.getTitle());
         exhibition.setStartDate(dto.getStartDate());
@@ -52,4 +53,5 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         exhibition.setMuseum(museum);
         exhibitionRepository.save(exhibition);
     }
+
 }
