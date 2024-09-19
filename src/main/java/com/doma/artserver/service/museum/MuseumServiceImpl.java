@@ -1,6 +1,8 @@
 package com.doma.artserver.service.museum;
 
+import com.doma.artserver.api.ApiClient;
 import com.doma.artserver.api.munhwa.MunwhaPortalApiClient;
+import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import com.doma.artserver.dto.museum.MunwhaPortalMuseumDTO;
 import jakarta.annotation.PostConstruct;
@@ -13,10 +15,10 @@ import java.util.stream.IntStream;
 @Service
 public class MuseumServiceImpl implements MuseumService {
 
-    private final MunwhaPortalApiClient apiClient;
+    private final ApiClient apiClient;
     private final MuseumRepository museumRepository;
 
-    public MuseumServiceImpl(MunwhaPortalApiClient apiClient,
+    public MuseumServiceImpl(ApiClient apiClient,
                              MuseumRepository museumRepository) {
         this.apiClient = apiClient;
         this.museumRepository = museumRepository;
@@ -29,18 +31,32 @@ public class MuseumServiceImpl implements MuseumService {
 
     @Override
     public void processMuseum() {
-//        int totalPage = apiClient.getTotalPages();
-//
-//        // Stream을 사용하여 각 페이지의 데이터를 가져와 리스트에 추가
-//        List<MunwhaPortalMuseumDTO> museumList =
-//                IntStream.rangeClosed(1, totalPage)      // 1부터 totalPage까지의 숫자 스트림 생성
-//                        .mapToObj(apiClient::fetchMuseums)  // 각 페이지에 대해 fetchExhibitions 호출
-//                        .flatMap(List::stream)                 // 각 페이지의 리스트를 하나의 스트림으로 병합
-//                        .toList();         // 최종적으로 리스트로 변환
-//
-//        for (MunwhaPortalMuseumDTO dto : museumList) {
-//            if (dto.getRealmName().equals("미술")) museumRepository.save(dto.toEntity());
-//        }
+        int page = 1;  // 페이지 시작은 1부터
+        List<MunwhaPortalMuseumDTO> museumList;
+
+        // 받아온 리스트가 비어있지 않을 때까지 계속 반복
+        do {
+            museumList = apiClient.fetchMuseums(page);  // 페이지마다 데이터를 받아옴
+
+            // 미술 카테고리만 필터링하여 저장
+            museumList.stream()
+                    .filter(dto -> "미술".equals(dto.getRealmName()))  // realmName이 "미술"인 항목만 필터링
+                    .map(this::saeMuseum)                            // 저장 로직으로 전달
+                    .forEach(museum -> System.out.println("Saved museum: " + museum.getName()));  // 저장된 미술관 정보 출력
+
+            page++;  // 페이지 증가
+        } while (!museumList.isEmpty());  // 리스트가 비어 있지 않으면 계속 반복
+    }
+
+    // 미술관 정보를 저장하는 메서드
+    private Museum saveMuseum(MunwhaPortalMuseumDTO dto) {
+        // DTO를 Entity로 변환
+        Museum museum = dto.toEntity();
+
+        // 이미 존재하는 미술관인지 체크 (중복 방지)
+        return museumRepository.findByName(museum.getName())
+                .orElseGet(() -> museumRepository.save(museum));  // 없다면 저장
+    }
 
     } // processMuseum ends
 

@@ -2,15 +2,13 @@ package com.doma.artserver.domain.museum.entity;
 
 import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Museum {
