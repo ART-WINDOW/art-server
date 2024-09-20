@@ -4,12 +4,11 @@ import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import com.doma.artserver.domain.museum.entity.Museum;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
 
 @Getter @Setter
 @XmlRootElement(name = "perforList")

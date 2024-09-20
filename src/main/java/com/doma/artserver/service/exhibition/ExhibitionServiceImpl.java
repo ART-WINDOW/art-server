@@ -48,9 +48,9 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         exhibition.setStartDate(dto.getStartDate());
         exhibition.setEndDate(dto.getEndDate());
 
-        Museum museum = museumRepository.findByName(dto.getPlace());
+        Optional<Museum> museum = museumRepository.findByName(dto.getPlace());
 
-        exhibition.setMuseum(museum);
+        exhibition.setMuseum(museum.get());
         exhibitionRepository.save(exhibition);
     }
 
