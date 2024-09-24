@@ -9,7 +9,6 @@ import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,18 +26,8 @@ public class ExhibitionServiceImpl implements ExhibitionService {
 
     @Override
     @Transactional
-    public void processExhibitions() {
-//        int totalPages = apiClient.getTotalPages();
-//
-//        for (int i = 1; i <= totalPages; i++) {
-//            List<MunwhaPortalExhibitionDTO> exhibitions = apiClient.fetchExhibitions(i);
-//
-//            for (MunwhaPortalExhibitionDTO dto : exhibitions) {
-//                if ("미술".equals(dto.getRealmName())) {
-//                    saveExhibition(dto);
-//                }
-//            }
-//        }
+    public void fetchExhibitions() {
+
     }
 
     @Override

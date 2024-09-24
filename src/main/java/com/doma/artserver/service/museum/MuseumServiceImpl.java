@@ -1,6 +1,7 @@
 package com.doma.artserver.service.museum;
 
 import com.doma.artserver.api.ApiClient;
+import com.doma.artserver.api.munhwa.MunwhaMuseumDTO;
 import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import com.doma.artserver.dto.museum.MunwhaPortalMuseumDTO;
@@ -8,14 +9,15 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MuseumServiceImpl implements MuseumService {
 
-    private final ApiClient apiClient;
+    private final ApiClient<MunwhaMuseumDTO> apiClient;
     private final MuseumRepository museumRepository;
 
-    public MuseumServiceImpl(ApiClient apiClient,
+    public MuseumServiceImpl(ApiClient<MunwhaMuseumDTO> apiClient,
                              MuseumRepository museumRepository) {
         this.apiClient = apiClient;
         this.museumRepository = museumRepository;
@@ -23,11 +25,28 @@ public class MuseumServiceImpl implements MuseumService {
 
     @PostConstruct
     public void init() {
-        processMuseum();
+        fetchMuseum();
     }
 
     @Override
-    public void processMuseum() {
+    public void fetchMuseum() {
+        int page = 1;
+        while(page < 150) {
+            List<MunwhaMuseumDTO> list = apiClient.fetchItems(page);
+
+            for (MunwhaMuseumDTO museumDTO : list) {
+                // name (place) 값으로 중복 검사
+                Optional<Museum> existingMuseum = museumRepository.findByName(museumDTO.getPlace());
+
+                // 중복되지 않은 경우에만 저장
+                if (existingMuseum.isEmpty()) {
+                    museumRepository.save(museumDTO.toEntity());
+                } else {
+                    System.out.println("중복된 데이터: " + museumDTO.getPlace());
+                }
+            }
+            page++;
+        }
 
     }
 
