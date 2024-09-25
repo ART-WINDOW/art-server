@@ -1,6 +1,6 @@
 package com.doma.artserver.service;
 
-import com.doma.artserver.api.munhwa.MunwhaPortalApiClient;
+import com.doma.artserver.api.munhwa.MunwhaMuseumApiClient;
 import com.doma.artserver.dto.exhibition.MunwhaPortalExhibitionDTO;
 import com.doma.artserver.service.museum.MuseumServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 public class MuseumServiceImplTest {
 
     @Mock
-    private MunwhaPortalApiClient apiClient;
+    private MunwhaMuseumApiClient apiClient;
 
     @InjectMocks
     private MuseumServiceImpl museumService;

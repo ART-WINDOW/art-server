@@ -23,10 +23,10 @@ public class MuseumServiceImpl implements MuseumService {
         this.museumRepository = museumRepository;
     }
 
-    @PostConstruct
-    public void init() {
-        fetchMuseum();
-    }
+//    @PostConstruct
+//    public void init() {
+//        fetchMuseum();
+//    }
 
     @Override
     public void fetchMuseum() {

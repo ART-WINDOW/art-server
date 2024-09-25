@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class MunwhaXMLParser implements XMLParser<MunwhaMuseumDTO> {
+public class MunwhaMuseumXMLParser implements XMLParser<MunwhaMuseumDTO> {
 
     @Override
     public List<MunwhaMuseumDTO> parse(String xmlData) throws Exception {
