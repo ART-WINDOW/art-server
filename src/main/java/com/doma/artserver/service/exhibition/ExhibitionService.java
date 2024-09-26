@@ -5,6 +5,6 @@ import org.springframework.data.domain.Page;
 
 public interface ExhibitionService<T> {
     void fetchExhibitions();
-    Page<T> getExhibitions(int page);
+    Page<T> getExhibitions(int page, int pageSize);
     void updateExhibitions();
 }

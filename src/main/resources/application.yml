@@ -14,4 +14,6 @@ spring:
   api:
     gyeonggikey: ${GYEONGGI_API_KEY}
     gonggongkey: ${GONGGONG_API_KEY}
-
+  logging:
+    level:
+     com.doma.artserver.controller.ExhibitionController: INFO

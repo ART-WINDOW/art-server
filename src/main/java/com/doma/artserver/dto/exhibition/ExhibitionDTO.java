@@ -26,8 +26,10 @@ public class ExhibitionDTO {
 
     private LocalDate endDate;
 
+    // 미술관/박물관 이름
     private String place;
 
+    // 전시 상태 (예정, 전시중, 종료)
     @Enumerated
     private ExhibitionStatus status;
 }

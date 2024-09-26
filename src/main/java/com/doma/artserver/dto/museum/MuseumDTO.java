@@ -8,4 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class MuseumDTO {
+    private int id;
 }

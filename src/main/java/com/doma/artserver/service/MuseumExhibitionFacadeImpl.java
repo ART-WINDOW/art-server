@@ -40,8 +40,8 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
-    public Page<ExhibitionDTO> getExhibitions(int page) {
-        return exhibitionService.getExhibitions(page);
+    public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
+        return exhibitionService.getExhibitions(page, pageSize);
     }
 
     @Override

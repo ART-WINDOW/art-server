@@ -24,7 +24,6 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     private final ApiClient<MunwhaExhibitionDTO> apiClient;
     private final ExhibitionRepository exhibitionRepository;
     private final MuseumRepository museumRepository;
-    private final int PAGE_SIZE = 20;
 
     public ExhibitionServiceImpl(ApiClient<MunwhaExhibitionDTO> apiClient, ExhibitionRepository exhibitionRepository, MuseumRepository museumRepository) {
         this.apiClient = apiClient;
@@ -41,7 +40,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         System.out.println("전시 수 : " + exhibitionRepository.count());
 
 
-        if (!isDbEmpty) maxPage = 1;
+        if (!isDbEmpty) maxPage = 2;
 
         while (page < maxPage) {
             List<MunwhaExhibitionDTO> list = apiClient.fetchItems(page);
@@ -64,10 +63,10 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     } // fetchExhibitions() ends
 
     @Override
-    public Page<ExhibitionDTO> getExhibitions(int page) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+    public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
 
-        Page<Exhibition> exhibitionList = exhibitionRepository.findAll(pageable);
+        Page<Exhibition> exhibitionList = exhibitionRepository.findAllByOrderByStartDateDesc(pageable);
 
         return exhibitionList.map(this::convertToDTO);
     }
@@ -81,6 +80,8 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 .imgUrl(exhibition.getImgUrl())
                 .place(exhibition.getPlace())
                 .status(exhibition.getStatus())
+                .startDate(exhibition.getStartDate())
+                .endDate(exhibition.getEndDate())
                 .build();
     }
 

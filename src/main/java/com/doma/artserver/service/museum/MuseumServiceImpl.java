@@ -22,7 +22,6 @@ public class MuseumServiceImpl implements MuseumService {
 
     private final ApiClient<MunwhaMuseumDTO> apiClient;
     private final MuseumRepository museumRepository;
-    private final int PAGE_SIZE = 20;
 
     public MuseumServiceImpl(ApiClient<MunwhaMuseumDTO> apiClient,
                              MuseumRepository museumRepository) {
@@ -39,7 +38,7 @@ public class MuseumServiceImpl implements MuseumService {
         boolean isDbEmpty = museumRepository.count() == 0;
         System.out.println("박물관 수 : " + museumRepository.count());
 
-        if (!isDbEmpty) maxPage = 1;
+        if (!isDbEmpty) maxPage = 2;
 
         while(page < maxPage) {
             List<MunwhaMuseumDTO> list = apiClient.fetchItems(page);
@@ -62,8 +61,8 @@ public class MuseumServiceImpl implements MuseumService {
 
     // 미구현
     @Override
-    public Page<MuseumDTO> getMuseums(int page) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+    public Page<MuseumDTO> getMuseums(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
 
         Page<Museum> museums = museumRepository.findAll(pageable);
 
