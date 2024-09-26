@@ -27,19 +27,17 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         this.museumRepository = museumRepository;
     }
 
-    @PostConstruct
-    public void init() {
-        fetchExhibitions();
-    }
-
     @Override
     @Transactional
     public void fetchExhibitions() {
         int page = 1;
+        int maxPage = 120;
+        boolean isDbEmpty = exhibitionRepository.count() == 0;
 
-        while(true) {
+        if (isDbEmpty) maxPage = 10;
+
+        while(page < maxPage) {
             List<MunwhaExhibitionDTO> list = apiClient.fetchItems(page);
-            if (list.isEmpty()) break;
 
             for (MunwhaExhibitionDTO dto : list) {
                 Optional<Exhibition> existingExhibition = exhibitionRepository.findByTitle(dto.getTitle());

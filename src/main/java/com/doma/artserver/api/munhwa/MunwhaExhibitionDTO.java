@@ -53,6 +53,7 @@ public class MunwhaExhibitionDTO {
                     .build();
         } else {
             return Exhibition.builder()
+                    .place(this.place)
                     .imgUrl(this.thumbnail)
                     .startDate(this.startDate)
                     .endDate(this.endDate)

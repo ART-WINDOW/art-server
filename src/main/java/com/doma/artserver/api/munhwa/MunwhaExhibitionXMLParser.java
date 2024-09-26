@@ -1,6 +1,7 @@
 package com.doma.artserver.api.munhwa;
 
 import com.doma.artserver.api.XMLParser;
+import com.doma.artserver.util.HtmlParser;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,7 +42,8 @@ public class MunwhaExhibitionXMLParser implements XMLParser<MunwhaExhibitionDTO>
                 // 각 필드값 추출
                 String place = getTagValue("place", element);
                 String realmName = getTagValue("realmName", element);
-                String title = getTagValue("title", element);
+                // title에 HTML 엔티티를 HtmlParser로 처리
+                String title = HtmlParser.parseHtml(getTagValue("title", element));
                 String area = getTagValue("area", element);
                 String thumbnail = getTagValue("thumbnail", element);
                 LocalDate startDate = parseDate(getTagValue("startDate", element));

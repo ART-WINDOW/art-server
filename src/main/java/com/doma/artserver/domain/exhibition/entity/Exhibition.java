@@ -28,6 +28,8 @@ public class Exhibition {
 
     private LocalDate endDate;
 
+    private String place;
+
     @Enumerated
     private ExhibitionStatus status;
 

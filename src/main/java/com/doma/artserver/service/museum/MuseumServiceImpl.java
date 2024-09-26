@@ -7,6 +7,7 @@ import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import com.doma.artserver.dto.museum.MunwhaPortalMuseumDTO;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,15 +24,17 @@ public class MuseumServiceImpl implements MuseumService {
         this.museumRepository = museumRepository;
     }
 
-//    @PostConstruct
-//    public void init() {
-//        fetchMuseum();
-//    }
-
     @Override
+    @Transactional
     public void fetchMuseum() {
         int page = 1;
-        while(page < 150) {
+        int maxPage = 120;
+
+        boolean isDbEmpty = museumRepository.count() == 0;
+
+        if (isDbEmpty) maxPage = 10;
+
+        while(page < maxPage) {
             List<MunwhaMuseumDTO> list = apiClient.fetchItems(page);
 
             for (MunwhaMuseumDTO museumDTO : list) {
