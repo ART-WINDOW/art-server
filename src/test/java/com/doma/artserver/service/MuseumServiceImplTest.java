@@ -1,7 +1,6 @@
 package com.doma.artserver.service;
 
 import com.doma.artserver.api.munhwa.MunwhaMuseumApiClient;
-import com.doma.artserver.dto.exhibition.MunwhaPortalExhibitionDTO;
 import com.doma.artserver.service.museum.MuseumServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,14 +24,14 @@ public class MuseumServiceImplTest {
     @Test
     void processMuseumTest() {
         // mock 전시 정보 생성
-        MunwhaPortalExhibitionDTO exhibition1 = MunwhaPortalExhibitionDTO.builder()
-                .title("전시1")
-                .place("미술관1")
-                .build();
-        MunwhaPortalExhibitionDTO exhibition2 = MunwhaPortalExhibitionDTO.builder()
-                .title("전시2")
-                .place("미술관2")
-                .build();
+//        MunwhaPortalExhibitionDTO exhibition1 = MunwhaPortalExhibitionDTO.builder()
+//                .title("전시1")
+//                .place("미술관1")
+//                .build();
+//        MunwhaPortalExhibitionDTO exhibition2 = MunwhaPortalExhibitionDTO.builder()
+//                .title("전시2")
+//                .place("미술관2")
+//                .build();
 
 
     }

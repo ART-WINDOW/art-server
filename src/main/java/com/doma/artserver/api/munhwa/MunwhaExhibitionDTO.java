@@ -33,7 +33,6 @@ public class MunwhaExhibitionDTO {
     @XmlElement(name = "thumbnail")
     private String thumbnail;
 
-
     @XmlElement(name = "startDate")
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate startDate;

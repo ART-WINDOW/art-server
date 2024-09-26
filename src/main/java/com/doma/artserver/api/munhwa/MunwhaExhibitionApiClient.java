@@ -59,7 +59,7 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
     public URI generateUrl(int page) {
         try {
             return new URI(BASE_URL + "?from=20240801&cPage=" + page +
-                    "&rows=10&place=&gpsxfrom=&gpsyfrom=&gpsxto=&gpsyto=&keyword=&sortStdr=1&serviceKey=" + API_KEY);
+                    "&rows=100&place=&gpsxfrom=&gpsyfrom=&gpsxto=&gpsyto=&keyword=&sortStdr=1&serviceKey=" + API_KEY);
         } catch (URISyntaxException e) {
             throw new RuntimeException("URL 생성 실패");
         }

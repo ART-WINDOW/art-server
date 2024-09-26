@@ -1,7 +1,5 @@
 package com.doma.artserver.api;
 
-import com.doma.artserver.dto.museum.MunwhaPortalMuseumDTO;
-
 import java.net.URI;
 import java.util.List;
 
