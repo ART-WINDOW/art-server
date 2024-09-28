@@ -66,9 +66,18 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        Page<Exhibition> exhibitionList = exhibitionRepository.findAllByOrderByStartDateDesc(pageable);
+        Page<Exhibition> exhibitions = exhibitionRepository.findAllByStatusAndOrderByStartDate(pageable);
 
-        return exhibitionList.map(this::convertToDTO);
+        return exhibitions.map(this::convertToDTO);
+    }
+
+    @Override
+    public Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<Exhibition> exhibitions = exhibitionRepository.findByMuseumIdsAndOrderByStatusAndStartDate(museumIds, pageable);
+
+        return exhibitions.map(this::convertToDTO);
     }
 
     // Exhibition -> ExhibitionDTO로 변환하는 메소드

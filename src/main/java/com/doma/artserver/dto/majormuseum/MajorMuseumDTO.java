@@ -1,4 +1,4 @@
-package com.doma.artserver.dto.museum;
+package com.doma.artserver.dto.majormuseum;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MuseumDTO {
+public class MajorMuseumDTO {
     private Long id;
 
     private String name;  // 미술관 이름
@@ -21,4 +21,6 @@ public class MuseumDTO {
     private String contactInfo;  // 연락처 정보
 
     private String website;  // 미술관 웹사이트 URL
+
+    private Long museumId;
 }

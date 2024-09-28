@@ -2,8 +2,10 @@ package com.doma.artserver.service.museum;
 
 import com.doma.artserver.api.ApiClient;
 import com.doma.artserver.api.munhwa.MunwhaMuseumDTO;
+import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.domain.museum.repository.MuseumRepository;
+import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,7 +42,7 @@ public class MuseumServiceImpl implements MuseumService {
 
         if (!isDbEmpty) maxPage = 2;
 
-        while(page < maxPage) {
+        while (page < maxPage) {
             List<MunwhaMuseumDTO> list = apiClient.fetchItems(page);
 
             for (MunwhaMuseumDTO museumDTO : list) {
@@ -59,96 +61,27 @@ public class MuseumServiceImpl implements MuseumService {
 
     }
 
-    // 미구현
     @Override
     public Page<MuseumDTO> getMuseums(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         Page<Museum> museums = museumRepository.findAll(pageable);
 
-        return new Page<MuseumDTO>() {
-            @Override
-            public int getTotalPages() {
-                return 0;
-            }
-
-            @Override
-            public long getTotalElements() {
-                return 0;
-            }
-
-            @Override
-            public <U> Page<U> map(Function<? super MuseumDTO, ? extends U> converter) {
-                return null;
-            }
-
-            @Override
-            public int getNumber() {
-                return 0;
-            }
-
-            @Override
-            public int getSize() {
-                return 0;
-            }
-
-            @Override
-            public int getNumberOfElements() {
-                return 0;
-            }
-
-            @Override
-            public List<MuseumDTO> getContent() {
-                return List.of();
-            }
-
-            @Override
-            public boolean hasContent() {
-                return false;
-            }
-
-            @Override
-            public Sort getSort() {
-                return null;
-            }
-
-            @Override
-            public boolean isFirst() {
-                return false;
-            }
-
-            @Override
-            public boolean isLast() {
-                return false;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return false;
-            }
-
-            @Override
-            public Pageable nextPageable() {
-                return null;
-            }
-
-            @Override
-            public Pageable previousPageable() {
-                return null;
-            }
-
-            @Override
-            public Iterator<MuseumDTO> iterator() {
-                return null;
-            }
-        };
+        return museums.map(this::convertToDTO);
     }
 
+    // Exhibition -> ExhibitionDTO로 변환하는 메소드
+    private MuseumDTO convertToDTO(Museum museum) {
+        return MuseumDTO.builder()
+                .name(museum.getName())
+                .area(museum.getArea())
+                .gpsX(museum.getGpsX())
+                .gpsY(museum.getGpsY())
+                .id(museum.getId())
+                .contactInfo(museum.getContactInfo())
+                .website(museum.getWebsite())
+                .build();
+    }
 
 
 } // MuseumService ends
