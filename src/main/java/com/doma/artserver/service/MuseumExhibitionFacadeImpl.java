@@ -1,6 +1,7 @@
 package com.doma.artserver.service;
 
-import com.doma.artserver.domain.exhibition.entity.Exhibition;
+import com.doma.artserver.domain.majormuseum.entity.MajorMuseum;
+import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import com.doma.artserver.dto.majormuseum.MajorMuseumDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,6 +73,35 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitionsByMuseums(museumIds, page, pageSize);
 
         return exhibitions;
+    }
+
+    @Override
+    @PostConstruct
+    public void saveMajorMuseumsByNames() {
+        List<String> museumNames = new ArrayList<>();
+        museumNames.add("국립중앙박물관");
+        museumNames.add("국립현대미술관 서울관");
+        museumNames.add("국립현대미술관 과천관");
+        museumNames.add("서울시립미술관");
+        museumNames.add("국립아시아문화전당");
+
+        // 1. Museum 이름 리스트로 검색
+        List<Museum> museums = museumService.findMuseumsByName(museumNames);
+
+        // 2. 검색된 각 Museum 객체를 기반으로 MajorMuseum 생성 및 저장
+        for (Museum museum : museums) {
+            MajorMuseum majorMuseum = MajorMuseum.builder()
+                    .name(museum.getName())
+                    .area(museum.getArea())
+                    .gpsX(museum.getGpsX())
+                    .gpsY(museum.getGpsY())
+                    .contactInfo(museum.getContactInfo())
+                    .website(museum.getWebsite())
+                    .museumId(museum.getId())
+                    .build();
+
+            majorMuseumService.saveMajorMuseum(majorMuseum);
+        }
     }
 
     @Override

@@ -70,6 +70,11 @@ public class MuseumServiceImpl implements MuseumService {
         return museums.map(this::convertToDTO);
     }
 
+    @Override
+    public List<Museum> findMuseumsByName(List names) {
+        return museumRepository.findByNameIn(names);
+    }
+
     // Exhibition -> ExhibitionDTO로 변환하는 메소드
     private MuseumDTO convertToDTO(Museum museum) {
         return MuseumDTO.builder()
