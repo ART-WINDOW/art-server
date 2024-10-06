@@ -39,7 +39,6 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         boolean isDbEmpty = exhibitionRepository.count() == 0;
         System.out.println("전시 수 : " + exhibitionRepository.count());
 
-
         if (!isDbEmpty) maxPage = 2;
 
         while (page < maxPage) {

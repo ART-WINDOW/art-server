@@ -1,5 +1,6 @@
 package com.doma.artserver.service;
 
+import com.doma.artserver.config.MajorMuseumConfig;
 import com.doma.artserver.domain.majormuseum.entity.MajorMuseum;
 import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
@@ -10,6 +11,7 @@ import com.doma.artserver.service.majormuseum.MajorMuseumService;
 import com.doma.artserver.service.museum.MuseumService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,30 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         // exhibition status 업데이트
         exhibitionService.updateExhibitions();
     }
+
+    @EventListener
+    public void handleMajorMuseumNamesUpdatedEvent(MajorMuseumConfig.MajorMuseumNamesUpdatedEvent event) {
+        saveMajorMuseumsByNames(event.getNames());
+    }
+
+    public void saveMajorMuseumsByNames(List<String> museumNames) {
+        List<Museum> museums = museumService.findMuseumsByName(museumNames);
+
+        for (Museum museum : museums) {
+            MajorMuseum majorMuseum = MajorMuseum.builder()
+                    .name(museum.getName())
+                    .area(museum.getArea())
+                    .gpsX(museum.getGpsX())
+                    .gpsY(museum.getGpsY())
+                    .contactInfo(museum.getContactInfo())
+                    .website(museum.getWebsite())
+                    .museumId(museum.getId())
+                    .build();
+
+            majorMuseumService.saveMajorMuseum(majorMuseum);
+        }
+    }
+
 
     @Override
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {

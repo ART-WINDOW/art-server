@@ -17,3 +17,11 @@ spring:
   logging:
     level:
      com.doma.artserver.controller.ExhibitionController: INFO
+
+  major-museums:
+    names:
+      - 국립중앙박물관
+      - 국립현대미술관 서울관
+      - 국립현대미술관 과천관
+      - 서울시립미술관
+      - 국립아시아문화전당
