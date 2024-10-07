@@ -2,22 +2,17 @@ package com.doma.artserver.service.museum;
 
 import com.doma.artserver.api.ApiClient;
 import com.doma.artserver.api.munhwa.MunwhaMuseumDTO;
-import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.domain.museum.repository.MuseumRepository;
-import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Service
 public class MuseumServiceImpl implements MuseumService {

@@ -41,6 +41,10 @@ public class MunwhaExhibitionDTO {
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate endDate;
 
+    @XmlElement(name = "seq")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
+    private LocalDate seq;
+
     public Exhibition toEntity(Museum museum) {
         if (museum == null) {
             return Exhibition.builder()

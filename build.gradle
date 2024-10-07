@@ -15,7 +15,7 @@ java {
 }
 
 jacoco {
-    toolVersion = '0.8.8'
+    toolVersion = '0.8.12'
 }
 
 test {
@@ -24,9 +24,13 @@ test {
 }
 
 jacocoTestReport {
-    dependsOn test // 테스트가 완료된 후에 실행되도록 설정
-    reports {
-        html.destination file("${buildDir}/jacocoHtml") // HTML 보고서 저장 경로
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/doma/artserver/service/**',
+                    'com/doma/artserver/domain/museum/repository/**'
+            ])
+        }))
     }
 }
 

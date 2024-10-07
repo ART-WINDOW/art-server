@@ -30,6 +30,8 @@ public class Exhibition {
 
     private String place;
 
+    private String url;
+
     @Enumerated
     private ExhibitionStatus status;
 
