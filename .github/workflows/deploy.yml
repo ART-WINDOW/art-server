@@ -19,11 +19,11 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build -x test
       env:
-          SPRING_DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
-          SPRING_API_GYEONGGIKEY: ${{ secrets.GYEONGGI_KEY }}
-          SPRING_API_GONGGONGKEY: ${{ secrets.GONGGONG_KEY }}
+          SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          SPRING_API_GYEONGGIKEY: ${{ secrets.GYEONGGI_API_KEY }}
+          SPRING_API_GONGGONGKEY: ${{ secrets.GONGGONG_API_KEY }}
 
     - name: Build Docker Image
       run: docker build -t art-server .
