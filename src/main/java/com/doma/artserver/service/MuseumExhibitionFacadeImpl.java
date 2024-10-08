@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +26,16 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     private final MuseumService museumService;
     private final ExhibitionService exhibitionService;
     private final MajorMuseumService majorMuseumService;
+    private final RestTemplate restTemplate;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
                                       @Qualifier("exhibitionServiceImpl") ExhibitionService exhibitionService,
-                                      @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService) {
+                                      @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService,
+                                      RestTemplate restTemplate) {
         this.museumService = museumService;
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -78,7 +82,25 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
     @Override
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
-        return exhibitionService.getExhibitions(page, pageSize);
+        Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitions(page, pageSize);
+
+        for (ExhibitionDTO exhibition : exhibitions) {
+            byte[] imageData = fetchImageData(exhibition.getImgUrl());
+            exhibition.setImageData(imageData);
+        }
+
+        return exhibitions;
+    }
+
+    // 전시 이미지 받아오기
+    private byte[] fetchImageData(String imageUrl) {
+        try {
+            return restTemplate.getForObject(imageUrl, byte[].class);
+        } catch (Exception e) {
+            System.out.println("Failed to fetch image data from " + imageUrl);
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
