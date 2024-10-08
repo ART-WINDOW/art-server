@@ -10,6 +10,11 @@ import com.doma.artserver.service.exhibition.ExhibitionService;
 import com.doma.artserver.service.majormuseum.MajorMuseumService;
 import com.doma.artserver.service.museum.MuseumService;
 import jakarta.annotation.PostConstruct;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
@@ -17,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +33,18 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     private final ExhibitionService exhibitionService;
     private final MajorMuseumService majorMuseumService;
     private final RestTemplate restTemplate;
+    private final CloseableHttpClient httpClient;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
                                       @Qualifier("exhibitionServiceImpl") ExhibitionService exhibitionService,
                                       @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService,
-                                      RestTemplate restTemplate) {
+                                      RestTemplate restTemplate,
+                                      CloseableHttpClient httpClient) {
         this.museumService = museumService;
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
         this.restTemplate = restTemplate;
+        this.httpClient = httpClient;
     }
 
     @Override
@@ -94,13 +103,19 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
     // 전시 이미지 받아오기
     private byte[] fetchImageData(String imageUrl) {
-        try {
-            return restTemplate.getForObject(imageUrl, byte[].class);
-        } catch (Exception e) {
+        HttpGet request = new HttpGet(imageUrl);
+        request.setHeader("User-Agent", "Mozilla/5.0");
+
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                return EntityUtils.toByteArray(entity);
+            }
+        } catch (IOException e) {
             System.out.println("Failed to fetch image data from " + imageUrl);
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 
     @Override
