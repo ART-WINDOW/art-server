@@ -135,6 +135,11 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         // museumIds를 사용하여 전시 목록을 가져옴
         Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitionsByMuseums(museumIds, page, pageSize);
 
+        for (ExhibitionDTO exhibition : exhibitions) {
+            byte[] imageData = fetchImageData(exhibition.getImgUrl());
+            exhibition.setImageData(imageData);
+        }
+
         return exhibitions;
     }
 
