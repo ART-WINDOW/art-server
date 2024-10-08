@@ -58,9 +58,9 @@ jobs:
           # 컨테이너 실행
           sudo docker run --rm -d -p 80:8080 \
             --name art-server \
-            -e SPRING_DATASOURCE_URL=${{ secrets.DB_URL }} \
-            -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }} \
-            -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e SPRING_API_GYEONGGIKEY=${{ secrets.GYEONGGI_API_KEY }} \
-            -e SPRING_API_GONGGONGKEY=${{ secrets.GONGGONG_API_KEY }} \
+            -e DB_URL=${{ secrets.DB_URL }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e GYEONGGI_API_KEY=${{ secrets.GYEONGGI_API_KEY }} \
+            -e GONGGONG_API_KEY=${{ secrets.GONGGONG_API_KEY }} \
             ${{ secrets.DOCKER_HUB_USERNAME }}/art-server:latest
