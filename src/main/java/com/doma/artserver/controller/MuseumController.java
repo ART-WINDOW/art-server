@@ -1,11 +1,9 @@
 package com.doma.artserver.controller;
 
-import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
 import com.doma.artserver.service.MuseumExhibitionFacade;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

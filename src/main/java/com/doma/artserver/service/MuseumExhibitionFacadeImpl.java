@@ -102,7 +102,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     // 전시 이미지 받아오기
-    private byte[] fetchImageData(String imageUrl) {
+    public byte[] fetchImageData(String imageUrl) {
         HttpGet request = new HttpGet(imageUrl);
         request.setHeader("User-Agent", "Mozilla/5.0");
 

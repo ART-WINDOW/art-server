@@ -27,8 +27,12 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    'com/doma/artserver/service/**',
-                    'com/doma/artserver/domain/museum/repository/**'
+                    'com/doma/artserver/domain/**',
+                    'com/doma/artserver/dto/**',
+                    'com/doma/artserver/exception/**',
+                    'com/doma/artserver/config/**',
+                    'com/doma/artserver/api/**',
+                    '**/ArtServerApplication.class'
             ])
         }))
     }
@@ -58,8 +62,7 @@ dependencies {
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-
-
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 }
 
 tasks.named('test') {

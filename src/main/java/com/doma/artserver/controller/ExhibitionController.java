@@ -37,11 +37,8 @@ public class ExhibitionController {
         return ResponseEntity.ok(exhibitions);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        System.out.println("TEST");
-        return "TEST";
-    }
+
+
 
 
 

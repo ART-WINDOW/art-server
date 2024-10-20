@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class MuseumServiceImplTest {
@@ -62,6 +61,27 @@ public class MuseumServiceImplTest {
     }
 
     @Test
+    public void testFetchMuseum_WithDuplicate() {
+        // Given
+        MunwhaMuseumDTO museumDTO1 = new MunwhaMuseumDTO();
+        museumDTO1.setPlace("Museum A");
+        MunwhaMuseumDTO museumDTO2 = new MunwhaMuseumDTO();
+        museumDTO2.setPlace("Museum B");
+
+        when(apiClient.fetchItems(1)).thenReturn(Arrays.asList(museumDTO1, museumDTO2));
+        when(museumRepository.findByName("Museum A")).thenReturn(Optional.of(new Museum()));
+        when(museumRepository.findByName("Museum B")).thenReturn(Optional.empty());
+
+        // When
+        museumService.fetchMuseum();
+
+        // Then
+        verify(museumRepository, times(1)).save(any(Museum.class)); // Museum B만 저장
+        verify(museumRepository, never()).save(argThat(museum -> "Museum A".equals(museum.getName()))); // Museum A는 저장되지 않아야 함
+    }
+
+
+    @Test
     public void testGetMuseums() {
         // Given
         Museum museum1 = Museum.builder()
@@ -93,6 +113,22 @@ public class MuseumServiceImplTest {
     }
 
     @Test
+    public void testGetMuseums_EmptyPage() {
+        // Given
+        Pageable pageable = PageRequest.of(1, 10);
+        Page<Museum> emptyPage = Page.empty(pageable);
+
+        when(museumRepository.findAll(pageable)).thenReturn(emptyPage);
+
+        // When
+        Page<MuseumDTO> result = museumService.getMuseums(1, 10);
+
+        // Then
+        assertEquals(0, result.getTotalElements());
+    }
+
+
+    @Test
     public void testFindMuseumsByName() {
         // Given
         Museum museum1 = Museum.builder()
@@ -120,4 +156,19 @@ public class MuseumServiceImplTest {
         assertEquals("Museum A", result.get(0).getName());
         assertEquals("Museum B", result.get(1).getName());
     }
+
+    @Test
+    public void testFindMuseumsByName_EmptyList() {
+        // Given
+        List<String> emptyNames = Arrays.asList();
+
+        when(museumRepository.findByNameIn(emptyNames)).thenReturn(List.of());
+
+        // When
+        List<Museum> result = museumService.findMuseumsByName(emptyNames);
+
+        // Then
+        assertEquals(0, result.size());
+    }
+
 }

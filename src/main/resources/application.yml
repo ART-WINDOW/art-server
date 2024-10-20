@@ -25,3 +25,9 @@ spring:
       - 국립현대미술관 과천관
       - 서울시립미술관
       - 국립아시아문화전당
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

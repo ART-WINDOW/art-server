@@ -1,6 +1,9 @@
 package com.doma.artserver.dto.exhibition;
 
 import com.doma.artserver.domain.exhibition.entity.ExhibitionStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
@@ -26,6 +29,7 @@ public class ExhibitionDTO {
 
     private LocalDate endDate;
 
+    @JsonIgnore
     private byte[] imageData;
 
     // 미술관/박물관 이름
