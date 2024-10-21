@@ -29,7 +29,6 @@ public class ExhibitionDTO {
 
     private LocalDate endDate;
 
-    @JsonIgnore
     private byte[] imageData;
 
     // 미술관/박물관 이름

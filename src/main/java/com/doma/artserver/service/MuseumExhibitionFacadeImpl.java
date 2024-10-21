@@ -109,12 +109,13 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
+                System.out.println(entity);
                 return EntityUtils.toByteArray(entity);
             }
         } catch (IOException e) {
-            System.out.println("Failed to fetch image data from " + imageUrl);
             e.printStackTrace();
         }
+
         return null;
     }
 
