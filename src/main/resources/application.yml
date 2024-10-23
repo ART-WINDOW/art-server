@@ -17,6 +17,10 @@ spring:
   logging:
     level:
      com.doma.artserver.controller.ExhibitionController: INFO
+  gcp:
+    project-id: ${PROEJCT_ID}
+    storage:
+      bucket-name: art-bucket
 
   major-museums:
     names:

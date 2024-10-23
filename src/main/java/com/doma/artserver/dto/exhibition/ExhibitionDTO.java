@@ -1,9 +1,6 @@
 package com.doma.artserver.dto.exhibition;
 
 import com.doma.artserver.domain.exhibition.entity.ExhibitionStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
@@ -22,6 +19,8 @@ public class ExhibitionDTO {
     private String description;
 
     private String imgUrl;
+
+    private String storageUrl;
 
     private String area;
 

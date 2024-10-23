@@ -8,6 +8,7 @@ import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.domain.exhibition.repository.ExhibitionRepository;
 import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
+import com.doma.artserver.util.storage.StorageService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +25,16 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     private final ApiClient<MunwhaExhibitionDTO> apiClient;
     private final ExhibitionRepository exhibitionRepository;
     private final MuseumRepository museumRepository;
+    private final StorageService storageService;
 
-    public ExhibitionServiceImpl(ApiClient<MunwhaExhibitionDTO> apiClient, ExhibitionRepository exhibitionRepository, MuseumRepository museumRepository) {
+    public ExhibitionServiceImpl(ApiClient<MunwhaExhibitionDTO> apiClient,
+                                 ExhibitionRepository exhibitionRepository,
+                                 MuseumRepository museumRepository,
+                                 StorageService<byte[]> storageService) {
         this.apiClient = apiClient;
         this.exhibitionRepository = exhibitionRepository;
         this.museumRepository = museumRepository;
+        this.storageService = storageService;
     }
 
     @Override

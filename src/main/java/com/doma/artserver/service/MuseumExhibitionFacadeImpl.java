@@ -9,6 +9,7 @@ import com.doma.artserver.dto.museum.MuseumDTO;
 import com.doma.artserver.service.exhibition.ExhibitionService;
 import com.doma.artserver.service.majormuseum.MajorMuseumService;
 import com.doma.artserver.service.museum.MuseumService;
+import com.doma.artserver.util.storage.StorageService;
 import jakarta.annotation.PostConstruct;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -32,7 +33,6 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     private final MuseumService museumService;
     private final ExhibitionService exhibitionService;
     private final MajorMuseumService majorMuseumService;
-    private final RestTemplate restTemplate;
     private final CloseableHttpClient httpClient;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
@@ -43,7 +43,6 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         this.museumService = museumService;
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
-        this.restTemplate = restTemplate;
         this.httpClient = httpClient;
     }
 

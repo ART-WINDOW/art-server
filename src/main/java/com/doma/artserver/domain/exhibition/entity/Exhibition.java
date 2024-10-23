@@ -22,6 +22,8 @@ public class Exhibition {
 
     private String imgUrl;
 
+    private String storageUrl;
+
     private String area;
 
     private LocalDate startDate;
