@@ -10,7 +10,7 @@ import java.io.InputStream;
 public class GCPstorageService implements StorageService<byte[]> {
 
     // 버킷 이름 지정
-    private final String bucketName = "art";
+    private final String bucketName = "art-window-image";
     // GCP 프로젝트 ID
     @Value("${spring.gcp.project-id}")
     private String projectId;
