@@ -18,7 +18,7 @@ spring:
     level:
      com.doma.artserver.controller.ExhibitionController: INFO
   gcp:
-    project-id: ${GCP_PROEJCT_ID}
+    project-id: ${GCP_PROJECT_ID}
     storage:
       bucket-name: art-bucket
 
