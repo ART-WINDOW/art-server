@@ -1,15 +1,13 @@
 package com.doma.artserver.util.storage;
 
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.InputStream;
 
 @Component
-public class GCPstorageService implements StorageService<InputStream> {
-
+public class GCPstorageService implements StorageService<byte[]> {
 
     // 버킷 이름 지정
     private final String bucketName = "art";
@@ -20,9 +18,22 @@ public class GCPstorageService implements StorageService<InputStream> {
     private final Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
 
     @Override
-    public String uploadFile(String fileName, InputStream data) {
+    public String uploadFile(String fileName, byte[] data) {
+        BlobId blobId = BlobId.of(bucketName, fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
-        return "";
+        Storage.BlobTargetOption precondition;
+        if (storage.get(blobId) != null) {
+            precondition = Storage.BlobTargetOption.doesNotExist();
+        } else {
+            precondition = Storage.BlobTargetOption.generationMatch(
+                    storage.get(bucketName, fileName).getGeneration());
+        }
+
+        storage.create(blobInfo, data, precondition);
+        storage.createAcl(blobId, Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+
+        return storage.get(blobId).getMediaLink();
     }
 
     @Override
@@ -31,7 +42,7 @@ public class GCPstorageService implements StorageService<InputStream> {
     }
 
     @Override
-    public InputStream downloadFile(String fileName) {
+    public byte[] downloadFile(String fileName) {
         return null;
     }
 }

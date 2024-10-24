@@ -20,7 +20,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,11 +89,6 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
         Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitions(page, pageSize);
 
-        for (ExhibitionDTO exhibition : exhibitions) {
-            byte[] imageData = fetchImageData(exhibition.getImgUrl());
-            exhibition.setImageData(imageData);
-        }
-
         return exhibitions;
     }
 
@@ -132,11 +126,6 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
         // museumIds를 사용하여 전시 목록을 가져옴
         Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitionsByMuseums(museumIds, page, pageSize);
-
-        for (ExhibitionDTO exhibition : exhibitions) {
-            byte[] imageData = fetchImageData(exhibition.getImgUrl());
-            exhibition.setImageData(imageData);
-        }
 
         return exhibitions;
     }
