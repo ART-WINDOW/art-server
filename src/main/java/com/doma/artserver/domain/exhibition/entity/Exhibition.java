@@ -39,7 +39,7 @@ public class Exhibition {
     @Enumerated
     private ExhibitionStatus status;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Museum museum;
 
 //    INST_NM	기관명
