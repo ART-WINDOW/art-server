@@ -55,6 +55,9 @@ jobs:
           # Docker Hub에서 최신 이미지 가져오기
           sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/art-server:latest
 
+           # 사용하지 않는 이전 이미지 정리
+          sudo docker image prune -f
+
           # 컨테이너 실행
           sudo docker run --rm -d -p 8080:8080 \
             --name art-server \
