@@ -55,6 +55,7 @@ public class MunwhaExhibitionDTO {
                     .endDate(this.endDate)
                     .title(this.title)
                     .area(this.area)
+                    .storageUrl(this.storageUrl)
                     .build();
         } else {
             return Exhibition.builder()
@@ -65,6 +66,7 @@ public class MunwhaExhibitionDTO {
                     .title(this.title)
                     .area(this.area)
                     .museum(museum)
+                    .storageUrl(this.storageUrl)
                     .build();
         }
     }

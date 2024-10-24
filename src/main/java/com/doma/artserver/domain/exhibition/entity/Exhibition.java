@@ -18,10 +18,12 @@ public class Exhibition {
 
     private String title;
 
+    @Column(length = 1000)
     private String description;
 
     private String imgUrl;
 
+    @Column(length = 1000)
     private String storageUrl;
 
     private String area;

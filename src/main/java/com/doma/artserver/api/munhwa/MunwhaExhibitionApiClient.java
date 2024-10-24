@@ -86,19 +86,28 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
     }
 
     public byte[] fetchImageData(String imageUrl) {
-        HttpGet request = new HttpGet(imageUrl);
-        request.setHeader("User-Agent", "Mozilla/5.0");
-
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                System.out.println(entity);
-                return EntityUtils.toByteArray(entity);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        // imageUrl이 null이거나 빈 값인지 확인
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            System.err.println("Image URL is null or empty");
+            return null;
         }
 
-        return null;
+        HttpGet request = new HttpGet(imageUrl);
+        request.setHeader("User-Agent", "Mozilla/5.0"); // User-Agent 설정
+
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
+            HttpEntity entity = response.getEntity(); // 응답 엔티티 추출
+            if (entity != null) {
+                System.out.println(entity);
+                return EntityUtils.toByteArray(entity); // 엔티티의 바이트 배열 반환
+            } else {
+                System.err.println("No entity found in the response");
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // 예외 발생 시 스택 트레이스 출력
+        }
+
+        return null; // 실패 시 null 반환
     }
+
 }
