@@ -94,6 +94,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 .status(exhibition.getStatus())
                 .startDate(exhibition.getStartDate())
                 .endDate(exhibition.getEndDate())
+                .storageUrl(exhibition.getStorageUrl())
                 .build();
     }
 
