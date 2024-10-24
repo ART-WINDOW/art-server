@@ -2,6 +2,7 @@ package com.doma.artserver.api.munhwa;
 
 import com.doma.artserver.api.ApiClient;
 import com.doma.artserver.api.XMLParser;
+import com.doma.artserver.api.munhwa.MunwhaExhibitionDTO;
 import com.doma.artserver.util.storage.StorageService;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -68,7 +68,10 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
                 .peek(exhibition -> {
                     byte[] imageData = fetchImageData(exhibition.getThumbnail());
                     if (imageData != null) {
-                        String storageUrl = storageService.uploadFile(exhibition.getTitle(), imageData);
+                        // 이미지 URL에서 확장자 추출
+                        String fileExtension = extractFileExtension(exhibition.getThumbnail());
+                        // 확장자가 추가된 파일 이름으로 이미지 업로드
+                        String storageUrl = storageService.uploadFile(exhibition.getTitle() + fileExtension, imageData);
                         exhibition.setStorageUrl(storageUrl);
                     }
                 })
@@ -110,4 +113,15 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
         return null; // 실패 시 null 반환
     }
 
+    // URL에서 파일 확장자를 추출하는 메서드
+    private String extractFileExtension(String imageUrl) {
+        try {
+            // URL에서 확장자 추출
+            return imageUrl.substring(imageUrl.lastIndexOf("."));
+        } catch (Exception e) {
+            // 확장자 추출 실패 시 기본값을 반환 (예: .jpg)
+            System.err.println("Failed to extract file extension from URL: " + imageUrl);
+            return ".jpg"; // 기본 확장자
+        }
+    }
 }
