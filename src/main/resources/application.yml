@@ -29,4 +29,8 @@ spring:
       - 국립현대미술관 과천관
       - 서울시립미술관
       - 국립아시아문화전당
+  data:
+    redis:
+      host: ${REDIS_HOST} # Redis 서버의 호스트 (기본값 localhost)
+      port: 6379       # Redis 서버의 포트 (기본값 6379)
 
