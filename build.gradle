@@ -68,6 +68,7 @@ dependencies {
     implementation platform('com.google.cloud:libraries-bom:26.48.0')
     implementation 'com.google.cloud:google-cloud-storage'
     implementation 'org.jboss.logging:jboss-logging:3.4.1.Final'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {

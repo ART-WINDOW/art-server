@@ -25,14 +25,16 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     private final ApiClient<MunwhaExhibitionDTO> apiClient;
     private final ExhibitionRepository exhibitionRepository;
     private final MuseumRepository museumRepository;
+    private final ExhibitionCacheService exhibitionCacheService;
 
     public ExhibitionServiceImpl(ApiClient<MunwhaExhibitionDTO> apiClient,
                                  ExhibitionRepository exhibitionRepository,
-                                 MuseumRepository museumRepository
-                                 ) {
+                                 MuseumRepository museumRepository,
+                                 ExhibitionCacheService exhibitionCacheService) {
         this.apiClient = apiClient;
         this.exhibitionRepository = exhibitionRepository;
         this.museumRepository = museumRepository;
+        this.exhibitionCacheService = exhibitionCacheService;
     }
 
     @Override
@@ -119,5 +121,15 @@ public class ExhibitionServiceImpl implements ExhibitionService {
             exhibitionRepository.save(exhibition);
         }
     }
+
+    @Override
+    public void cacheExhibitions() {
+        exhibitionRepository.findAll().forEach(exhibition -> {
+            ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
+            exhibitionCacheService.saveExhibition(exhibitionDTO);
+        });
+    }
+
+
 
 }

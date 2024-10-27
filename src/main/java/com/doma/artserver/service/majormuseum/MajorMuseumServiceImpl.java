@@ -29,6 +29,11 @@ public class MajorMuseumServiceImpl implements MajorMuseumService{
         majorMuseumRepository.save(majorMuseum);
     }
 
+    @Override
+    public void deleteMajorMuseum(Long id) {
+        majorMuseumRepository.deleteById(id);
+    }
+
     // MajorMuseum을 MuseumDTO로 변환하는 메서드
     private MajorMuseumDTO convertToDto(MajorMuseum majorMuseum) {
         return MajorMuseumDTO.builder()

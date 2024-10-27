@@ -6,6 +6,7 @@ import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import com.doma.artserver.dto.majormuseum.MajorMuseumDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
+import com.doma.artserver.service.exhibition.ExhibitionCacheService;
 import com.doma.artserver.service.exhibition.ExhibitionService;
 import com.doma.artserver.service.majormuseum.MajorMuseumService;
 import com.doma.artserver.service.museum.MuseumService;
@@ -18,6 +19,9 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,15 +36,18 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     private final ExhibitionService exhibitionService;
     private final MajorMuseumService majorMuseumService;
     private final CloseableHttpClient httpClient;
+    private final ExhibitionCacheService exhibitionCacheService;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
                                       @Qualifier("exhibitionServiceImpl") ExhibitionService exhibitionService,
                                       @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService,
+                                      ExhibitionCacheService exhibitionCacheService,
                                       CloseableHttpClient httpClient) {
         this.museumService = museumService;
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
         this.httpClient = httpClient;
+        this.exhibitionCacheService = exhibitionCacheService;
     }
 
     @Override
@@ -51,6 +58,11 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         museumService.fetchMuseum();
         // 2. 저장된 museum 데이터를 기반으로 exhibition 데이터를 저장
         exhibitionService.fetchExhibitions();
+        // 3. exhibition 데이터 cache에 저장
+        List<ExhibitionDTO> exhibitions = exhibitionService.getExhibitions(0, 1000).getContent();
+        for (ExhibitionDTO exhibition : exhibitions) {
+            exhibitionCacheService.saveExhibition(exhibition);
+        }
     }
 
     @Override
@@ -87,7 +99,18 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
     @Override
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
-        Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitions(page, pageSize);
+        Page<ExhibitionDTO> exhibitions;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
+        if (!exhibitionCacheService.getExhibitions(page, pageSize).isEmpty()) {
+            exhibitions = new PageImpl<> (exhibitionCacheService.getExhibitions(page, pageSize), pageable, exhibitionCacheService.getExhibitions(page, pageSize).size());
+        } else {
+            exhibitions = exhibitionService.getExhibitions(page, pageSize);
+            for (ExhibitionDTO exhibition : exhibitions) {
+                exhibitionCacheService.saveExhibition(exhibition);
+            }
+        }
 
         return exhibitions;
     }
