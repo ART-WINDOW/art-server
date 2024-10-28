@@ -1,6 +1,10 @@
 package com.doma.artserver.service.exhibition;
 
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -45,9 +49,10 @@ public class ExhibitionCacheServiceImpl implements ExhibitionCacheService {
     }
 
     @Override
-    public List<ExhibitionDTO> getExhibitions(int page, int pageSize) {
+    public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
         // Redis에서 모든 전시회 키를 가져옴
         Set<String> keys = redisTemplate.keys("exhibition:*");
+        Pageable pageable = PageRequest.of(page, pageSize);
 
         // 키를 정렬하고 페이지네이션을 적용
         List<String> sortedKeys = new ArrayList<>(keys);
@@ -58,7 +63,7 @@ public class ExhibitionCacheServiceImpl implements ExhibitionCacheService {
 
         // 유효성 검사
         if (start > end) {
-            return Collections.emptyList();
+            return new PageImpl<>(Collections.emptyList(), pageable, sortedKeys.size());
         }
 
         // 페이지 범위 내의 키를 가져옴
@@ -67,8 +72,12 @@ public class ExhibitionCacheServiceImpl implements ExhibitionCacheService {
         // 해당 키들에 대한 전시회 데이터를 가져옴
         List<ExhibitionDTO> exhibitions = redisTemplate.opsForValue().multiGet(pageKeys);
 
-        // null 값을 제거하고 반환
-        return exhibitions.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        // null 값을 제거하고 Page 객체로 반환
+        List<ExhibitionDTO> filteredExhibitions = exhibitions.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(filteredExhibitions, pageable, sortedKeys.size());
     }
 
 

@@ -1,8 +1,7 @@
 package com.doma.artserver.service.exhibition;
 
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ExhibitionCacheService {
     void saveExhibition(ExhibitionDTO exhibitionDTO);
@@ -10,5 +9,5 @@ public interface ExhibitionCacheService {
     void deleteExhibition(Long id);
     void updateExhibition(ExhibitionDTO exhibitionDTO);
     void clearCache();
-    public List<ExhibitionDTO> getExhibitions(int page, int pageSize);
+    public Page<ExhibitionDTO> getExhibitions(int page, int pageSize);
 }

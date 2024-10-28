@@ -104,18 +104,19 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     @Override
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
         Page<ExhibitionDTO> exhibitions;
-        Pageable pageable = PageRequest.of(page, pageSize);
 
         // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
         if (!exhibitionCacheService.getExhibitions(page, pageSize).isEmpty()) {
-            exhibitions = exhibitionService.getExhibitions(page, pageSize);
+            exhibitions = exhibitionCacheService.getExhibitions(page, pageSize);
             for (ExhibitionDTO exhibition : exhibitions) {
                 exhibitionCacheService.saveExhibition(exhibition);
+                System.out.println("cache에 저장된 전시회 : " + exhibition);
             }
         } else {
             exhibitions = exhibitionService.getExhibitions(page, pageSize);
             for (ExhibitionDTO exhibition : exhibitions) {
                 exhibitionCacheService.saveExhibition(exhibition);
+                System.out.println("db에 저장된 전시회 : " + exhibition);
             }
         }
 
