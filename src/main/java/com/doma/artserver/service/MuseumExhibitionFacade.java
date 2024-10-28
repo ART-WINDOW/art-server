@@ -13,4 +13,5 @@ public interface MuseumExhibitionFacade<T> {
     public void saveMajorMuseumsByNames();
     T getExhibitionById(Long id);
     T getMuseumById(Long id);
+    void clearCache();
 }

@@ -32,4 +32,11 @@ public class AdminController {
         return "pong";
     }
 
+    @GetMapping("/clearCache")
+    public String clearCache() {
+        museumExhibitionFacade.clearCache();
+        return "Cache cleared successfully";
+    }
+
+
 }

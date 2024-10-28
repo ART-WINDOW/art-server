@@ -56,6 +56,11 @@ public class ExhibitionCacheServiceImpl implements ExhibitionCacheService {
         int start = page * pageSize;
         int end = Math.min(start + pageSize, sortedKeys.size());
 
+        // 유효성 검사
+        if (start > end) {
+            return Collections.emptyList();
+        }
+
         // 페이지 범위 내의 키를 가져옴
         List<String> pageKeys = sortedKeys.subList(start, end);
 

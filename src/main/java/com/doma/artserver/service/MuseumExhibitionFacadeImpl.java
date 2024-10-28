@@ -73,6 +73,10 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         exhibitionService.updateExhibitions();
     }
 
+    public void clearCache() {
+        exhibitionCacheService.clearCache();
+    }
+
     @EventListener
     public void handleMajorMuseumNamesUpdatedEvent(MajorMuseumConfig.MajorMuseumNamesUpdatedEvent event) {
         saveMajorMuseumsByNames(event.getNames());
@@ -104,7 +108,10 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
         // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
         if (!exhibitionCacheService.getExhibitions(page, pageSize).isEmpty()) {
-            exhibitions = new PageImpl<> (exhibitionCacheService.getExhibitions(page, pageSize), pageable, exhibitionCacheService.getExhibitions(page, pageSize).size());
+            exhibitions = exhibitionService.getExhibitions(page, pageSize);
+            for (ExhibitionDTO exhibition : exhibitions) {
+                exhibitionCacheService.saveExhibition(exhibition);
+            }
         } else {
             exhibitions = exhibitionService.getExhibitions(page, pageSize);
             for (ExhibitionDTO exhibition : exhibitions) {
@@ -146,6 +153,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         List<Long> museumIds = majorMuseums.stream()
                 .map(MajorMuseumDTO::getMuseumId)
                 .toList();
+
 
         // museumIds를 사용하여 전시 목록을 가져옴
         Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitionsByMuseums(museumIds, page, pageSize);
