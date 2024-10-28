@@ -4,7 +4,8 @@ import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ExhibitionCacheServiceImpl implements ExhibitionCacheService {
@@ -45,7 +46,26 @@ public class ExhibitionCacheServiceImpl implements ExhibitionCacheService {
 
     @Override
     public List<ExhibitionDTO> getExhibitions(int page, int pageSize) {
-        return List.of();
+        // Redis에서 모든 전시회 키를 가져옴
+        Set<String> keys = redisTemplate.keys("exhibition:*");
+
+        // 키를 정렬하고 페이지네이션을 적용
+        List<String> sortedKeys = new ArrayList<>(keys);
+        Collections.sort(sortedKeys);
+
+        int start = page * pageSize;
+        int end = Math.min(start + pageSize, sortedKeys.size());
+
+        // 페이지 범위 내의 키를 가져옴
+        List<String> pageKeys = sortedKeys.subList(start, end);
+
+        // 해당 키들에 대한 전시회 데이터를 가져옴
+        List<ExhibitionDTO> exhibitions = redisTemplate.opsForValue().multiGet(pageKeys);
+
+        System.out.println("exhibitions: " + exhibitions.get(0).getTitle());
+
+        // null 값을 제거하고 반환
+        return exhibitions.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
 
