@@ -62,8 +62,6 @@ public class ExhibitionCacheServiceImpl implements ExhibitionCacheService {
         // 해당 키들에 대한 전시회 데이터를 가져옴
         List<ExhibitionDTO> exhibitions = redisTemplate.opsForValue().multiGet(pageKeys);
 
-        System.out.println("exhibitions: " + exhibitions.get(0).getTitle());
-
         // null 값을 제거하고 반환
         return exhibitions.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }

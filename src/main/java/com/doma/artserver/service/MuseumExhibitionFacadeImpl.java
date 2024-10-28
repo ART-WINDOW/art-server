@@ -51,7 +51,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
-    @PostConstruct
+//    @PostConstruct
     @Scheduled(cron = "0 0 3 * * ?")
     public void loadData() {
         // 1. 먼저 전체 museum 데이터를 저장
@@ -66,7 +66,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
-    @PostConstruct
+//    @PostConstruct
     @Scheduled(cron = "0 0 0 * * ?")
     public void updateData() {
         // exhibition status 업데이트
