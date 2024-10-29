@@ -79,6 +79,10 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     public Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
 
+        for (Long id : museumIds) {
+            System.out.println("Museum ID: " + id);
+        }
+
         Page<Exhibition> exhibitions = exhibitionRepository.findByMuseumIdsAndOrderByStatusAndStartDate(museumIds, pageable);
         System.out.println("Exhibitions found: " + exhibitions.getTotalElements());
 
@@ -114,7 +118,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
             // 전시 상태 업데이트 로직
             if (exhibition.getStartDate().isAfter(today)) {
                 exhibition.setStatus(ExhibitionStatus.SCHEDULED);  // 예정
-            } else if (exhibition.getStartDate().isBefore(today) && exhibition.getEndDate().isAfter(today)) {
+            } else if ((exhibition.getStartDate().isBefore(today) || exhibition.getStartDate().isEqual(today)) && exhibition.getEndDate().isAfter(today)) {
                 exhibition.setStatus(ExhibitionStatus.ONGOING);  // 진행 중
             } else if (exhibition.getEndDate().isBefore(today)) {
                 exhibition.setStatus(ExhibitionStatus.COMPLETED);  // 종료

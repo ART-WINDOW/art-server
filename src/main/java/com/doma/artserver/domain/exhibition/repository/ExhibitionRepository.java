@@ -31,7 +31,7 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
             "CASE " +
             "WHEN e.status = 1 THEN 1 " + // ONGOING 상태
             "WHEN e.status = 0 THEN 2 " + // SCHEDULED 상태
-            "END, e.startDate DESC")
+            "END")
     Page<Exhibition> findByMuseumIdsAndOrderByStatusAndStartDate(@Param("museumIds") List<Long> museumIds, Pageable pageable);
 
 
