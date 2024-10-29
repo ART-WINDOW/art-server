@@ -42,8 +42,7 @@ public class MunwhaExhibitionDTO {
     private LocalDate endDate;
 
     @XmlElement(name = "seq")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
-    private LocalDate seq;
+    private Long seq;
 
     private String storageUrl;
 
@@ -56,6 +55,7 @@ public class MunwhaExhibitionDTO {
                     .title(this.title)
                     .area(this.area)
                     .storageUrl(this.storageUrl)
+                    .apiId(this.seq)
                     .build();
         } else {
             return Exhibition.builder()
@@ -67,6 +67,7 @@ public class MunwhaExhibitionDTO {
                     .area(this.area)
                     .museum(museum)
                     .storageUrl(this.storageUrl)
+                    .apiId(this.seq)
                     .build();
         }
     }

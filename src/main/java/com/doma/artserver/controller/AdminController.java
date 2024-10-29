@@ -38,5 +38,11 @@ public class AdminController {
         return "Cache cleared successfully";
     }
 
+    @GetMapping("/clearExhibition")
+    public String clearExhibition() {
+        museumExhibitionFacade.clearExhibition();
+        return "Exhibition cleared successfully";
+    }
+
 
 }

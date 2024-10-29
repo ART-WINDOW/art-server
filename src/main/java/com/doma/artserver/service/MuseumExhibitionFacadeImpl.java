@@ -19,9 +19,6 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -59,10 +56,8 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         // 2. 저장된 museum 데이터를 기반으로 exhibition 데이터를 저장
         exhibitionService.fetchExhibitions();
         // 3. exhibition 데이터 cache에 저장
-        List<ExhibitionDTO> exhibitions = exhibitionService.getExhibitions(0, 1000).getContent();
-        for (ExhibitionDTO exhibition : exhibitions) {
-            exhibitionCacheService.saveExhibition(exhibition);
-        }
+        exhibitionCacheService.clearCache();
+        exhibitionService.cacheExhibitions();
     }
 
     @Override
@@ -110,13 +105,11 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
             exhibitions = exhibitionCacheService.getExhibitions(page, pageSize);
             for (ExhibitionDTO exhibition : exhibitions) {
                 exhibitionCacheService.saveExhibition(exhibition);
-                System.out.println("cache에 저장된 전시회 : " + exhibition);
             }
         } else {
             exhibitions = exhibitionService.getExhibitions(page, pageSize);
             for (ExhibitionDTO exhibition : exhibitions) {
                 exhibitionCacheService.saveExhibition(exhibition);
-                System.out.println("db에 저장된 전시회 : " + exhibition);
             }
         }
 
@@ -191,6 +184,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         }
     }
 
+
     @Override
     public Object getExhibitionById(Long id) {
         return null;
@@ -199,6 +193,10 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     @Override
     public Object getMuseumById(Long id) {
         return null;
+    }
+
+    public void clearExhibition() {
+        exhibitionService.clearExhibition();
     }
 
 

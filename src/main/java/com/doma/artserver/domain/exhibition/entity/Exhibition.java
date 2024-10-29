@@ -16,6 +16,8 @@ public class Exhibition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long apiId;
+
     private String title;
 
     @Column(length = 1000)

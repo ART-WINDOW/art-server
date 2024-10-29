@@ -14,4 +14,5 @@ public interface MuseumExhibitionFacade<T> {
     T getExhibitionById(Long id);
     T getMuseumById(Long id);
     void clearCache();
+    void clearExhibition();
 }

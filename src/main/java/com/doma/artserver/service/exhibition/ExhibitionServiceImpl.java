@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -128,6 +127,11 @@ public class ExhibitionServiceImpl implements ExhibitionService {
             ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
             exhibitionCacheService.saveExhibition(exhibitionDTO);
         });
+    }
+
+    @Override
+    public void clearExhibition() {
+        exhibitionRepository.deleteAll();
     }
 
 

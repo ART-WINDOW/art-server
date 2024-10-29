@@ -11,4 +11,5 @@ public interface ExhibitionService {
     Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize);
     void updateExhibitions();
     void cacheExhibitions();
+    void clearExhibition();
 }

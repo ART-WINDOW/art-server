@@ -2,7 +2,6 @@ package com.doma.artserver.api.munhwa;
 
 import com.doma.artserver.api.ApiClient;
 import com.doma.artserver.api.XMLParser;
-import com.doma.artserver.api.munhwa.MunwhaExhibitionDTO;
 import com.doma.artserver.util.storage.StorageService;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
