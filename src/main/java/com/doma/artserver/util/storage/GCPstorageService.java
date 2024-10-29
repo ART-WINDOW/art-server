@@ -36,8 +36,10 @@ public class GCPstorageService implements StorageService<byte[]> {
         // 모든 사용자에게 읽기 권한 부여
         storage.createAcl(blobId, Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
 
-        // 업로드한 파일의 미디어 링크 반환
-        return storage.get(blobId).getMediaLink();
+        // ACL 변경 사항이 적용된 Blob 객체를 다시 가져옴
+        Blob updatedBlob = storage.get(blobId);
+
+        return updatedBlob.getMediaLink();
     }
 
     @Override

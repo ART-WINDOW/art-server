@@ -34,17 +34,19 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     private final MajorMuseumService majorMuseumService;
     private final CloseableHttpClient httpClient;
     private final ExhibitionCacheService exhibitionCacheService;
+    private final MajorMuseumConfig majorMuseumConfig;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
                                       @Qualifier("exhibitionServiceImpl") ExhibitionService exhibitionService,
                                       @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService,
                                       ExhibitionCacheService exhibitionCacheService,
-                                      CloseableHttpClient httpClient) {
+                                      CloseableHttpClient httpClient, MajorMuseumConfig majorMuseumConfig) {
         this.museumService = museumService;
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
         this.httpClient = httpClient;
         this.exhibitionCacheService = exhibitionCacheService;
+        this.majorMuseumConfig = majorMuseumConfig;
     }
 
     @Override
@@ -159,11 +161,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
     @Override
     public void saveMajorMuseumsByNames() {
-        List<String> museumNames = new ArrayList<>();
-        museumNames.add("국립중앙박물관");
-        museumNames.add("국립현대미술관 서울관");
-        museumNames.add("국립현대미술관 과천관");
-        museumNames.add("서울시립미술관");
+        List<String> museumNames = majorMuseumConfig.getNames();
 
         // 1. Museum 이름 리스트로 검색
         List<Museum> museums = museumService.findMuseumsByName(museumNames);
