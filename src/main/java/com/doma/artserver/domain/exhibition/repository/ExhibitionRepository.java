@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
+    Optional<Exhibition> findByApiId(Long apiId);
     Optional<Exhibition> findByTitle(String title);
     Page<Exhibition> findAll(Pageable pageable);
     Page<Exhibition> findAllByOrderByStartDateDesc(Pageable pageable);

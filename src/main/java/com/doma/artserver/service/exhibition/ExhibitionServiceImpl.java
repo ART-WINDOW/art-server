@@ -50,7 +50,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
             List<MunwhaExhibitionDTO> list = apiClient.fetchItems(page);
 
             for (MunwhaExhibitionDTO dto : list) {
-                Optional<Exhibition> existingExhibition = exhibitionRepository.findByTitle(dto.getTitle());
+                Optional<Exhibition> existingExhibition = exhibitionRepository.findByApiId(dto.getSeq());
 
                 if (existingExhibition.isEmpty()) {
                     Optional<Museum> museum = museumRepository.findByName(dto.getPlace());
