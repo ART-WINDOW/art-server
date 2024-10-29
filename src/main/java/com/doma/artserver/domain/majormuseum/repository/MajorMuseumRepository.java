@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface MajorMuseumRepository extends JpaRepository<MajorMuseum, Long> {
     List<MajorMuseum> findAll();
     Optional<MajorMuseum> findByName(String name);
+    Optional<MajorMuseum> findByMuseumId(Long museumId);
 }

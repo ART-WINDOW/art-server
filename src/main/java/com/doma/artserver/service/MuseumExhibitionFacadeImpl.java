@@ -49,20 +49,19 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
-//    @PostConstruct
     @Scheduled(cron = "0 0 3 * * ?")
     public void loadData() {
         // 1. 먼저 전체 museum 데이터를 저장
         museumService.fetchMuseum();
         // 2. 저장된 museum 데이터를 기반으로 exhibition 데이터를 저장
         exhibitionService.fetchExhibitions();
-        // 3. exhibition 데이터 cache에 저장
-        exhibitionCacheService.clearCache();
-        exhibitionService.cacheExhibitions();
+        // 3. exhibition status 업데이트
+        exhibitionService.updateExhibitions();
         // 4. majorMuseum 갱신
         saveMajorMuseumsByNames();
-        // 5. exhibition status 업데이트
-        exhibitionService.updateExhibitions();
+        // 5. exhibition 데이터 cache에 저장
+        exhibitionCacheService.clearCache();
+        exhibitionService.cacheExhibitions();
     }
 
     @Override
@@ -163,14 +162,18 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
+    @PostConstruct
     public void saveMajorMuseumsByNames() {
+        System.out.println("save major museums\n\n\n\n\n");
         List<String> museumNames = majorMuseumConfig.getNames();
+        System.out.println("list size: " + museumNames.size());
 
         // 1. Museum 이름 리스트로 검색
         List<Museum> museums = museumService.findMuseumsByName(museumNames);
 
         // 2. 검색된 각 Museum 객체를 기반으로 MajorMuseum 생성 및 저장
         for (Museum museum : museums) {
+            System.out.println("Museum name: " + (museum.getName()));
             MajorMuseum majorMuseum = MajorMuseum.builder()
                     .name(museum.getName())
                     .area(museum.getArea())

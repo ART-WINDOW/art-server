@@ -1,5 +1,6 @@
 package com.doma.artserver.config;
 
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -9,14 +10,11 @@ import java.util.List;
 
 @Configuration
 @ConfigurationProperties(prefix = "major-museums")
+@Getter
 public class MajorMuseumConfig implements ApplicationEventPublisherAware {
 
     private List<String> names;
     private ApplicationEventPublisher eventPublisher;
-
-    public List<String> getNames() {
-        return names;
-    }
 
     public void setNames(List<String> names) {
         this.names = names;

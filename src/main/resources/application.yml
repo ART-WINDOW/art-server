@@ -21,15 +21,15 @@ spring:
     project-id: ${GCP_PROJECT_ID}
     storage:
       bucket-name: art-bucket
-
-  major-museums:
-    names:
-      - 국립중앙박물관
-      - 국립현대미술관 서울관
-      - 국립현대미술관 과천관
-      - 서울시립미술관
   data:
     redis:
       host: ${REDIS_HOST} # Redis 서버의 호스트 (기본값 localhost)
       port: 6379       # Redis 서버의 포트 (기본값 6379)
+
+major-museums:
+  names:
+    - 국립중앙박물관
+    - 국립현대미술관 서울관
+    - 국립현대미술관 과천관
+    - 서울시립미술관
 

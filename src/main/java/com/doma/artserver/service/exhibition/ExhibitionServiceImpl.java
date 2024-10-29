@@ -40,7 +40,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     @Transactional
     public void fetchExhibitions() {
         int page = 1;
-        int maxPage = 12;
+        int maxPage = 25;
         boolean isDbEmpty = exhibitionRepository.count() == 0;
         System.out.println("전시 수 : " + exhibitionRepository.count());
 

@@ -48,6 +48,7 @@ public class MunwhaExhibitionXMLParser implements XMLParser<MunwhaExhibitionDTO>
                 String thumbnail = getTagValue("thumbnail", element);
                 LocalDate startDate = parseDate(getTagValue("startDate", element));
                 LocalDate endDate = parseDate(getTagValue("endDate", element));
+                Long seq = Long.parseLong(getTagValue("seq", element));
 
                 // DTO 생성 후 리스트에 추가
                 MunwhaExhibitionDTO exhibition = MunwhaExhibitionDTO.builder()
@@ -58,6 +59,7 @@ public class MunwhaExhibitionXMLParser implements XMLParser<MunwhaExhibitionDTO>
                         .thumbnail(thumbnail)
                         .startDate(startDate)
                         .endDate(endDate)
+                        .seq(seq)
                         .build();
 
                 exhibitionList.add(exhibition);

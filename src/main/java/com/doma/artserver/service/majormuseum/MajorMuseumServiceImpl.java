@@ -27,11 +27,10 @@ public class MajorMuseumServiceImpl implements MajorMuseumService{
 
     @Override
     public void saveMajorMuseum(MajorMuseum majorMuseum) {
-        Optional<MajorMuseum> existingMajorMuseum = majorMuseumRepository.findByName(majorMuseum.getName());
-        if (existingMajorMuseum.isPresent()) {
-            return;
+        Optional<MajorMuseum> existingMajorMuseum = majorMuseumRepository.findByMuseumId(majorMuseum.getMuseumId());
+        if (existingMajorMuseum.isEmpty()) {
+            majorMuseumRepository.save(majorMuseum);
         }
-        majorMuseumRepository.save(majorMuseum);
     }
 
     @Override

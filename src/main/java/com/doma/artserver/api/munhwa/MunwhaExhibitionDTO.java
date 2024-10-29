@@ -18,6 +18,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MunwhaExhibitionDTO {
 
+    @XmlElement(name = "seq")
+    private Long seq;
+
     @XmlElement(name = "place")
     private String place;
 
@@ -41,8 +44,6 @@ public class MunwhaExhibitionDTO {
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate endDate;
 
-    @XmlElement(name = "seq")
-    private Long seq;
 
     private String storageUrl;
 
