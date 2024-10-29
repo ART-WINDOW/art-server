@@ -23,7 +23,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,6 +61,8 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         exhibitionService.cacheExhibitions();
         // 4. majorMuseum 갱신
         saveMajorMuseumsByNames();
+        // 5. exhibition status 업데이트
+        exhibitionService.updateExhibitions();
     }
 
     @Override
@@ -151,7 +152,6 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         List<Long> museumIds = majorMuseums.stream()
                 .map(MajorMuseumDTO::getMuseumId)
                 .toList();
-
 
         // museumIds를 사용하여 전시 목록을 가져옴
         Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitionsByMuseums(museumIds, page, pageSize);

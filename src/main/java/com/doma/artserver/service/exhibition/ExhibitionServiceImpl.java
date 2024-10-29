@@ -80,6 +80,9 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         Page<Exhibition> exhibitions = exhibitionRepository.findByMuseumIdsAndOrderByStatusAndStartDate(museumIds, pageable);
+        System.out.println("Exhibitions found: " + exhibitions.getTotalElements());
+
+        exhibitions.forEach(exhibition -> System.out.println("Exhibition Title: " + exhibition.getTitle()));
 
         return exhibitions.map(this::convertToDTO);
     }
@@ -96,6 +99,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 .startDate(exhibition.getStartDate())
                 .endDate(exhibition.getEndDate())
                 .storageUrl(exhibition.getStorageUrl())
+                .apiId(exhibition.getApiId())
                 .build();
     }
 

@@ -33,6 +33,7 @@ public class ExhibitionController {
     public ResponseEntity<Page<ExhibitionDTO>> getMajorExhibitions(@RequestParam(defaultValue = "0") int page,
                                                                    @RequestParam(defaultValue = "20") int pageSize) {
         Page<ExhibitionDTO> exhibitions = museumExhibitionFacade.getMajorExhibitions(page, pageSize);
+        exhibitions.forEach(exhibition -> System.out.println("Exhibition Title: " + exhibition.getTitle()));
 
         return ResponseEntity.ok(exhibitions);
     }
