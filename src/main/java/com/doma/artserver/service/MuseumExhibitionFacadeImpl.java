@@ -58,6 +58,8 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         // 3. exhibition 데이터 cache에 저장
         exhibitionCacheService.clearCache();
         exhibitionService.cacheExhibitions();
+        // 4. majorMuseum 갱신
+        saveMajorMuseumsByNames();
     }
 
     @Override
@@ -156,14 +158,12 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
-    @PostConstruct
     public void saveMajorMuseumsByNames() {
         List<String> museumNames = new ArrayList<>();
         museumNames.add("국립중앙박물관");
         museumNames.add("국립현대미술관 서울관");
         museumNames.add("국립현대미술관 과천관");
         museumNames.add("서울시립미술관");
-        museumNames.add("국립아시아문화전당");
 
         // 1. Museum 이름 리스트로 검색
         List<Museum> museums = museumService.findMuseumsByName(museumNames);

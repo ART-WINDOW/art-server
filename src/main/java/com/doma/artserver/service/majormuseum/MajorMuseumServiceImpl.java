@@ -6,6 +6,7 @@ import com.doma.artserver.dto.majormuseum.MajorMuseumDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,10 @@ public class MajorMuseumServiceImpl implements MajorMuseumService{
 
     @Override
     public void saveMajorMuseum(MajorMuseum majorMuseum) {
+        Optional<MajorMuseum> existingMajorMuseum = majorMuseumRepository.findByName(majorMuseum.getName());
+        if (existingMajorMuseum.isPresent()) {
+            return;
+        }
         majorMuseumRepository.save(majorMuseum);
     }
 
