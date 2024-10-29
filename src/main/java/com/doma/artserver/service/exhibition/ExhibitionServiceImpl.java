@@ -132,8 +132,11 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     @Override
     public void cacheExhibitions() {
         exhibitionRepository.findAll().forEach(exhibition -> {
-            ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
-            exhibitionCacheService.saveExhibition(exhibitionDTO);
+            if (exhibition.getStatus() != ExhibitionStatus.COMPLETED) {
+                ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
+                exhibitionCacheService.saveExhibition(exhibitionDTO);
+            }
+
         });
     }
 
