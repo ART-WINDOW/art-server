@@ -1,4 +1,4 @@
-package com.doma.artserver.api.munhwa;
+package com.doma.artserver.api.munhwa.exhibition;
 
 import com.doma.artserver.api.ApiClient;
 import com.doma.artserver.api.XMLParser;
@@ -87,6 +87,16 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
         } catch (URISyntaxException e) {
             throw new RuntimeException("URL 생성 실패");
         }
+    }
+
+    @Override
+    public List<MunwhaExhibitionDTO> fetchItems(Long apiId) {
+        return List.of();
+    }
+
+    @Override
+    public URI generateUrl(Long seq) {
+        return null;
     }
 
     public byte[] fetchImageData(String imageUrl) {

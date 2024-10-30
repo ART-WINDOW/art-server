@@ -1,26 +1,23 @@
-package com.doma.artserver.api.munhwa;
+package com.doma.artserver.api.munhwa.museum;
 
 import com.doma.artserver.api.XMLParser;
-import com.doma.artserver.util.HtmlParser;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class MunwhaExhibitionXMLParser implements XMLParser<MunwhaExhibitionDTO> {
+public class MunwhaMuseumXMLParser implements XMLParser<MunwhaMuseumDTO> {
+
     @Override
-    public List<MunwhaExhibitionDTO> parse(String xmlData) throws Exception {
+    public List<MunwhaMuseumDTO> parse(String xmlData) throws Exception {
         // XML 데이터를 UTF-8로 변환하여 파싱
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -30,7 +27,7 @@ public class MunwhaExhibitionXMLParser implements XMLParser<MunwhaExhibitionDTO>
 
         // perforList 노드 가져오기
         NodeList nodeList = document.getElementsByTagName("perforList");
-        List<MunwhaExhibitionDTO> exhibitionList = new ArrayList<>();
+        List<MunwhaMuseumDTO> museumList = new ArrayList<>();
 
         // 각 perforList 노드 탐색
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -41,32 +38,25 @@ public class MunwhaExhibitionXMLParser implements XMLParser<MunwhaExhibitionDTO>
 
                 // 각 필드값 추출
                 String place = getTagValue("place", element);
-                String realmName = getTagValue("realmName", element);
-                // title에 HTML 엔티티를 HtmlParser로 처리
-                String title = HtmlParser.parseHtml(getTagValue("title", element));
                 String area = getTagValue("area", element);
-                String thumbnail = getTagValue("thumbnail", element);
-                LocalDate startDate = parseDate(getTagValue("startDate", element));
-                LocalDate endDate = parseDate(getTagValue("endDate", element));
-                Long seq = Long.parseLong(getTagValue("seq", element));
+                String gpsX = getTagValue("gpsX", element);
+                String gpsY = getTagValue("gpsY", element);
+                String realmName = getTagValue("realmName", element);
 
                 // DTO 생성 후 리스트에 추가
-                MunwhaExhibitionDTO exhibition = MunwhaExhibitionDTO.builder()
+                MunwhaMuseumDTO museum = MunwhaMuseumDTO.builder()
                         .place(place)
-                        .realmName(realmName)
-                        .title(title)
                         .area(area)
-                        .thumbnail(thumbnail)
-                        .startDate(startDate)
-                        .endDate(endDate)
-                        .seq(seq)
+                        .gpsX(gpsX)
+                        .gpsY(gpsY)
+                        .realmName(realmName)
                         .build();
 
-                exhibitionList.add(exhibition);
+                museumList.add(museum);
             }
         }
 
-        return exhibitionList;
+        return museumList;
     }
 
     // 특정 태그의 값을 가져오는 헬퍼 메서드
@@ -75,14 +65,4 @@ public class MunwhaExhibitionXMLParser implements XMLParser<MunwhaExhibitionDTO>
         Node node = nodeList.item(0);
         return node != null ? node.getNodeValue() : null;
     }
-
-    // XML에서 날짜 형식을 LocalDate로 변환하는 메서드
-    private LocalDate parseDate(String date) {
-        if (date != null && !date.isEmpty()) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-            return LocalDate.parse(date, formatter);
-        }
-        return null;
-    }
-
 }

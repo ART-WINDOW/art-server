@@ -8,6 +8,7 @@ import com.doma.artserver.dto.majormuseum.MajorMuseumDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
 import com.doma.artserver.service.exhibition.ExhibitionCacheService;
 import com.doma.artserver.service.exhibition.ExhibitionService;
+import com.doma.artserver.service.exhibitiondetail.ExhibitionDetailServiceImpl;
 import com.doma.artserver.service.majormuseum.MajorMuseumService;
 import com.doma.artserver.service.museum.MuseumService;
 import jakarta.annotation.PostConstruct;
@@ -34,22 +35,26 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     private final CloseableHttpClient httpClient;
     private final ExhibitionCacheService exhibitionCacheService;
     private final MajorMuseumConfig majorMuseumConfig;
+    private final ExhibitionDetailServiceImpl exhibitionDetailService;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
                                       @Qualifier("exhibitionServiceImpl") ExhibitionService exhibitionService,
                                       @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService,
                                       ExhibitionCacheService exhibitionCacheService,
-                                      CloseableHttpClient httpClient, MajorMuseumConfig majorMuseumConfig) {
+                                      CloseableHttpClient httpClient,
+                                      MajorMuseumConfig majorMuseumConfig,
+                                      ExhibitionDetailServiceImpl exhibitionDetailService) {
         this.museumService = museumService;
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
         this.httpClient = httpClient;
         this.exhibitionCacheService = exhibitionCacheService;
         this.majorMuseumConfig = majorMuseumConfig;
+        this.exhibitionDetailService = exhibitionDetailService;
     }
 
     @Override
-    @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 0 4 * * ?")
     public void loadData() {
         // 1. 먼저 전체 museum 데이터를 저장
         museumService.fetchMuseum();
@@ -57,9 +62,11 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         exhibitionService.fetchExhibitions();
         // 3. exhibition status 업데이트
         exhibitionService.updateExhibitions();
-        // 4. majorMuseum 갱신
+        // 4. exhibition Detail 데이터 저장
+        exhibitionDetailService.fetchExhibitionDetails();
+        // 5. majorMuseum 갱신
         saveMajorMuseumsByNames();
-        // 5. exhibition 데이터 cache에 저장
+        // 6. exhibition 데이터 cache에 저장
         exhibitionCacheService.clearCache();
         exhibitionService.cacheExhibitions();
     }
@@ -162,18 +169,14 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
-    @PostConstruct
     public void saveMajorMuseumsByNames() {
-        System.out.println("save major museums\n\n\n\n\n");
         List<String> museumNames = majorMuseumConfig.getNames();
-        System.out.println("list size: " + museumNames.size());
 
         // 1. Museum 이름 리스트로 검색
         List<Museum> museums = museumService.findMuseumsByName(museumNames);
 
         // 2. 검색된 각 Museum 객체를 기반으로 MajorMuseum 생성 및 저장
         for (Museum museum : museums) {
-            System.out.println("Museum name: " + (museum.getName()));
             MajorMuseum majorMuseum = MajorMuseum.builder()
                     .name(museum.getName())
                     .area(museum.getArea())

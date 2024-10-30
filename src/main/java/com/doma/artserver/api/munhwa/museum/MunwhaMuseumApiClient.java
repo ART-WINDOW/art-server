@@ -1,4 +1,4 @@
-package com.doma.artserver.api.munhwa;
+package com.doma.artserver.api.munhwa.museum;
 
 import com.doma.artserver.api.ApiClient;
 import com.doma.artserver.api.XMLParser;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class MunwhaMuseumApiClient implements ApiClient {
+public class MunwhaMuseumApiClient implements ApiClient<MunwhaMuseumDTO> {
 
     private final RestTemplate restTemplate;
     private final XMLParser<MunwhaMuseumDTO> xmlParser;
@@ -66,10 +66,15 @@ public class MunwhaMuseumApiClient implements ApiClient {
         }
     }
 
+    @Override
+    public List<MunwhaMuseumDTO> fetchItems(Long apiId) {
+        return List.of();
+    }
 
-
-
-
+    @Override
+    public URI generateUrl(Long seq) {
+        return null;
+    }
 
 
 }

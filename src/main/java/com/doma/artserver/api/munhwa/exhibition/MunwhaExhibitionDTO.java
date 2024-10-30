@@ -1,4 +1,4 @@
-package com.doma.artserver.api.munhwa;
+package com.doma.artserver.api.munhwa.exhibition;
 
 import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import com.doma.artserver.domain.museum.entity.Museum;

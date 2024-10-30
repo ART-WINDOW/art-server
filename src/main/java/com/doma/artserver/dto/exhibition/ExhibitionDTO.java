@@ -33,6 +33,8 @@ public class ExhibitionDTO {
 
     private Long apiId;
 
+    private String url;
+
     // 전시 상태 (예정, 전시중, 종료)
     @Enumerated
     private ExhibitionStatus status;

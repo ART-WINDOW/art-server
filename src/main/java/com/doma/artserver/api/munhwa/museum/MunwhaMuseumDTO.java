@@ -1,4 +1,4 @@
-package com.doma.artserver.api.munhwa;
+package com.doma.artserver.api.munhwa.museum;
 
 import com.doma.artserver.domain.museum.entity.Museum;
 import jakarta.xml.bind.annotation.XmlElement;

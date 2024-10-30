@@ -36,6 +36,7 @@ public class Exhibition {
 
     private String place;
 
+    @Column(length = 1000)
     private String url;
 
     @Enumerated

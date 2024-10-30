@@ -1,7 +1,7 @@
 package com.doma.artserver.service;
 
 import com.doma.artserver.api.ApiClient;
-import com.doma.artserver.api.munhwa.MunwhaExhibitionDTO;
+import com.doma.artserver.api.munhwa.exhibition.MunwhaExhibitionDTO;
 import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import com.doma.artserver.domain.exhibition.entity.ExhibitionStatus;
 import com.doma.artserver.domain.exhibition.repository.ExhibitionRepository;

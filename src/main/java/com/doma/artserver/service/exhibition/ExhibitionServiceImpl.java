@@ -1,7 +1,7 @@
 package com.doma.artserver.service.exhibition;
 
 import com.doma.artserver.api.ApiClient;
-import com.doma.artserver.api.munhwa.MunwhaExhibitionDTO;
+import com.doma.artserver.api.munhwa.exhibition.MunwhaExhibitionDTO;
 import com.doma.artserver.domain.exhibition.entity.Exhibition;
 import com.doma.artserver.domain.exhibition.entity.ExhibitionStatus;
 import com.doma.artserver.domain.museum.entity.Museum;
@@ -39,6 +39,34 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     @Override
     @Transactional
     public void fetchExhibitions() {
+        int page = 1;
+        int maxPage = 25;
+        boolean isDbEmpty = exhibitionRepository.count() == 0;
+        System.out.println("전시 수 : " + exhibitionRepository.count());
+
+        if (!isDbEmpty) maxPage = 2;
+
+        while (page < maxPage) {
+            List<MunwhaExhibitionDTO> list = apiClient.fetchItems(page);
+
+            for (MunwhaExhibitionDTO dto : list) {
+                Optional<Exhibition> existingExhibition = exhibitionRepository.findByApiId(dto.getSeq());
+
+                if (existingExhibition.isEmpty()) {
+                    Optional<Museum> museum = museumRepository.findByName(dto.getPlace());
+                    if (museum.isPresent()) {
+                        exhibitionRepository.save(dto.toEntity(museum.get()));
+                    } else {
+                        exhibitionRepository.save(dto.toEntity(Museum.builder().name("정보 없음").build()));
+                    }
+                }
+            }
+            page++;
+        } // while ends
+
+    } // fetchExhibitions() ends
+
+    public void fetchExhibitionDetail() {
         int page = 1;
         int maxPage = 25;
         boolean isDbEmpty = exhibitionRepository.count() == 0;
@@ -104,6 +132,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 .endDate(exhibition.getEndDate())
                 .storageUrl(exhibition.getStorageUrl())
                 .apiId(exhibition.getApiId())
+                .url(exhibition.getUrl())
                 .build();
     }
 

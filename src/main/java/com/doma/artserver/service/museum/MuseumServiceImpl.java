@@ -1,7 +1,7 @@
 package com.doma.artserver.service.museum;
 
 import com.doma.artserver.api.ApiClient;
-import com.doma.artserver.api.munhwa.MunwhaMuseumDTO;
+import com.doma.artserver.api.munhwa.museum.MunwhaMuseumDTO;
 import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import com.doma.artserver.dto.museum.MuseumDTO;
