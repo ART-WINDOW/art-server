@@ -8,6 +8,8 @@ import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.domain.exhibition.repository.ExhibitionRepository;
 import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,10 @@ import java.util.Optional;
 
 @Service
 public class ExhibitionServiceImpl implements ExhibitionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExhibitionServiceImpl.class);
+    private static final int DEFAULT_MAX_PAGE = 25;
+    private static final int NON_EMPTY_DB_MAX_PAGE = 2;
 
     private final ApiClient<MunwhaExhibitionDTO> apiClient;
     private final ExhibitionRepository exhibitionRepository;
@@ -39,12 +45,16 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     @Override
     @Transactional
     public void fetchExhibitions() {
-        int page = 1;
-        int maxPage = 25;
-        boolean isDbEmpty = exhibitionRepository.count() == 0;
-        System.out.println("전시 수 : " + exhibitionRepository.count());
+        fetchExhibitions(DEFAULT_MAX_PAGE);
+    }
 
-        if (!isDbEmpty) maxPage = 2;
+    @Transactional
+    public void fetchExhibitions(int maxPage) {
+        int page = 1;
+        boolean isDbEmpty = exhibitionRepository.count() == 0;
+        logger.info("전시 수 : {}", exhibitionRepository.count());
+
+        if (!isDbEmpty) maxPage = NON_EMPTY_DB_MAX_PAGE;
 
         while (page < maxPage) {
             List<MunwhaExhibitionDTO> list = apiClient.fetchItems(page);
@@ -62,64 +72,23 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 }
             }
             page++;
-        } // while ends
-
-    } // fetchExhibitions() ends
-
-    public void fetchExhibitionDetail() {
-        int page = 1;
-        int maxPage = 25;
-        boolean isDbEmpty = exhibitionRepository.count() == 0;
-        System.out.println("전시 수 : " + exhibitionRepository.count());
-
-        if (!isDbEmpty) maxPage = 2;
-
-        while (page < maxPage) {
-            List<MunwhaExhibitionDTO> list = apiClient.fetchItems(page);
-
-            for (MunwhaExhibitionDTO dto : list) {
-                Optional<Exhibition> existingExhibition = exhibitionRepository.findByApiId(dto.getSeq());
-
-                if (existingExhibition.isEmpty()) {
-                    Optional<Museum> museum = museumRepository.findByName(dto.getPlace());
-                    if (museum.isPresent()) {
-                        exhibitionRepository.save(dto.toEntity(museum.get()));
-                    } else {
-                        exhibitionRepository.save(dto.toEntity(Museum.builder().name("정보 없음").build()));
-                    }
-                }
-            }
-            page++;
-        } // while ends
-
-    } // fetchExhibitions() ends
+        }
+    }
 
     @Override
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-
         Page<Exhibition> exhibitions = exhibitionRepository.findAllByStatusAndOrderByStartDate(pageable);
-
         return exhibitions.map(this::convertToDTO);
     }
 
     @Override
     public Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-
-        for (Long id : museumIds) {
-            System.out.println("Museum ID: " + id);
-        }
-
         Page<Exhibition> exhibitions = exhibitionRepository.findByMuseumIdsAndOrderByStatusAndStartDate(museumIds, pageable);
-        System.out.println("Exhibitions found: " + exhibitions.getTotalElements());
-
-        exhibitions.forEach(exhibition -> System.out.println("Exhibition Title: " + exhibition.getTitle()));
-
         return exhibitions.map(this::convertToDTO);
     }
 
-    // Exhibition -> ExhibitionDTO로 변환하는 메소드
     private ExhibitionDTO convertToDTO(Exhibition exhibition) {
         return ExhibitionDTO.builder()
                 .id(exhibition.getId())
@@ -133,28 +102,29 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 .storageUrl(exhibition.getStorageUrl())
                 .apiId(exhibition.getApiId())
                 .url(exhibition.getUrl())
+                .price(exhibition.getPrice())
                 .build();
     }
 
     @Override
     @Transactional
     public void updateExhibitions() {
-        List<Exhibition> exhibitions = exhibitionRepository.findAll();  // 모든 전시회 조회
-
+        List<Exhibition> exhibitions = exhibitionRepository.findAll();
         LocalDate today = LocalDate.now();
 
         for (Exhibition exhibition : exhibitions) {
-            // 전시 상태 업데이트 로직
-            if (exhibition.getStartDate().isAfter(today)) {
-                exhibition.setStatus(ExhibitionStatus.SCHEDULED);  // 예정
-            } else if ((exhibition.getStartDate().isBefore(today) || exhibition.getStartDate().isEqual(today)) && exhibition.getEndDate().isAfter(today)) {
-                exhibition.setStatus(ExhibitionStatus.ONGOING);  // 진행 중
-            } else if (exhibition.getEndDate().isBefore(today)) {
-                exhibition.setStatus(ExhibitionStatus.COMPLETED);  // 종료
-            }
-
-            // 업데이트된 상태를 저장
+            updateExhibitionStatus(exhibition, today);
             exhibitionRepository.save(exhibition);
+        }
+    }
+
+    private void updateExhibitionStatus(Exhibition exhibition, LocalDate today) {
+        if (exhibition.getStartDate().isAfter(today)) {
+            exhibition.setStatus(ExhibitionStatus.SCHEDULED);
+        } else if ((exhibition.getStartDate().isBefore(today) || exhibition.getStartDate().isEqual(today)) && exhibition.getEndDate().isAfter(today)) {
+            exhibition.setStatus(ExhibitionStatus.ONGOING);
+        } else if (exhibition.getEndDate().isBefore(today)) {
+            exhibition.setStatus(ExhibitionStatus.COMPLETED);
         }
     }
 
@@ -165,7 +135,6 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
                 exhibitionCacheService.saveExhibition(exhibitionDTO);
             }
-
         });
     }
 
@@ -173,7 +142,4 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     public void clearExhibition() {
         exhibitionRepository.deleteAll();
     }
-
-
-
 }

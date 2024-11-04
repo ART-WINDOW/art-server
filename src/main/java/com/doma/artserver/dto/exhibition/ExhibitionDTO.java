@@ -28,6 +28,8 @@ public class ExhibitionDTO {
 
     private LocalDate endDate;
 
+    private String price;
+
     // 미술관/박물관 이름
     private String place;
 

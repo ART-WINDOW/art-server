@@ -36,6 +36,8 @@ public class Exhibition {
 
     private String place;
 
+    private String price;
+
     @Column(length = 1000)
     private String url;
 

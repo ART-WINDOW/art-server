@@ -29,6 +29,7 @@ public class ExhibitionDetailServiceImpl {
             List<MunwhaExhibitionDetailDTO> detailList = apiClient.fetchItems(exhibition.getApiId());
                 for (MunwhaExhibitionDetailDTO detail : detailList) {
                     exhibition.setUrl(detail.getUrl());
+                    exhibition.setPrice(detail.getPrice());
                 }
 
             exhibitionRepository.save(exhibition);
