@@ -39,6 +39,9 @@ public class MunwhaExhibitionDetailXMLParser implements XMLParser<MunwhaExhibiti
                 // 각 필드값 추출
                 String price = getTagValue("price", element);
                 String url = getTagValue("url", element);
+                if (url == null || url.isEmpty()) {
+                    url = getTagValue("placeUrl", element);
+                }
 
 
                 // DTO 생성 후 리스트에 추가

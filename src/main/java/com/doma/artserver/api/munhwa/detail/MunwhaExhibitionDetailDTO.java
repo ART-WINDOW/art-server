@@ -18,4 +18,7 @@ public class MunwhaExhibitionDetailDTO {
     @XmlElement(name = "url")
     private String url;
 
+    @XmlElement(name = "placeUrl")
+    private String placeUrl;
+
 }

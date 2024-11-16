@@ -73,7 +73,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
     @Override
 //    @PostConstruct
-//    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void updateData() {
         // exhibition status 업데이트
         exhibitionService.updateExhibitions();
