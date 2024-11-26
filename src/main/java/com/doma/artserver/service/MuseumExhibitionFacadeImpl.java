@@ -57,11 +57,11 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     @Scheduled(cron = "0 0 4 * * ?")
     public void loadData() {
         // 1. 먼저 전체 museum 데이터를 저장
-        museumService.fetchMuseum();
+//        museumService.fetchMuseum();
         // 2. 저장된 museum 데이터를 기반으로 exhibition 데이터를 저장
-        exhibitionService.fetchExhibitions();
+//        exhibitionService.fetchExhibitions();
         // 3. exhibition status 업데이트
-        exhibitionService.updateExhibitions();
+//        exhibitionService.updateExhibitions();
         // 4. exhibition Detail 데이터 저장
         exhibitionDetailService.fetchExhibitionDetails();
         // 5. majorMuseum 갱신
@@ -69,6 +69,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         // 6. exhibition 데이터 cache에 저장
         exhibitionCacheService.clearCache();
         exhibitionService.cacheExhibitions();
+        System.out.println("데이터 로드 완료");
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.google.cloud.storage.*;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.net.URI;
+
 @Component
 public class GCPstorageService implements StorageService<byte[]> {
 
@@ -17,7 +19,7 @@ public class GCPstorageService implements StorageService<byte[]> {
 
     @Override
     public String uploadFile(String fileName, byte[] data) {
-        BlobId blobId = BlobId.of(bucketName, fileName);
+        BlobId blobId = BlobId.of(bucketName, fileName.trim());
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
         Storage.BlobTargetOption precondition;
@@ -25,21 +27,21 @@ public class GCPstorageService implements StorageService<byte[]> {
 
         if (existingBlob == null) {
             // 객체가 존재하지 않는 경우 (새로 업로드할 때)
-            precondition = Storage.BlobTargetOption.doesNotExist();
+//            precondition = Storage.BlobTargetOption.doesNotExist();
+            // 파일 업로드
+            storage.create(blobInfo, data);
+            // 모든 사용자에게 읽기 권한 부여
+//        storage.createAcl(blobId, Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
         } else {
             // 객체가 존재하는 경우, generationMatch를 사용하여 업로드 조건 설정
-            precondition = Storage.BlobTargetOption.generationMatch(existingBlob.getGeneration());
+//            precondition = Storage.BlobTargetOption.generationMatch(existingBlob.getGeneration());
+            return "https://storage.googleapis.com/" + bucketName + "/" + existingBlob.getBlobId().getName();
         }
 
-        // 파일 업로드
-        storage.create(blobInfo, data, precondition);
-        // 모든 사용자에게 읽기 권한 부여
-        storage.createAcl(blobId, Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
-
         // ACL 변경 사항이 적용된 Blob 객체를 다시 가져옴
-        Blob updatedBlob = storage.get(blobId);
+//        Blob updatedBlob = storage.get(blobId);
 
-        return updatedBlob.getMediaLink();
+        return "https://storage.googleapis.com/" + bucketName + "/" + fileName.trim();
     }
 
     @Override

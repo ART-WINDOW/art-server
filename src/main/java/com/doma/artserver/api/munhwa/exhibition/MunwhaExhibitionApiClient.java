@@ -29,7 +29,7 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
 
     @Value("${spring.api.gonggongkey}")
     private String API_KEY;
-    private static final String BASE_URL = "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period";
+    private static final String BASE_URL = "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/realm";
 
     MunwhaExhibitionApiClient(RestTemplate restTemplate,
                               XMLParser<MunwhaExhibitionDTO> xmlParser,
@@ -60,9 +60,8 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
             throw new RuntimeException("파싱 실패", e);
         }
 
-        // Stream API를 이용하여 'realmName'이 "미술"인 항목 필터링
         return exhibitionList.stream()
-                .filter(exhibition -> "미술".equals(exhibition.getRealmName()))
+//                .filter(exhibition -> "미술".equals(exhibition.getRealmName()))
                 .peek(exhibition -> {
                     byte[] imageData = null;
                     if (exhibition.getThumbnail() != null) {
@@ -82,8 +81,8 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
     @Override
     public URI generateUrl(int page) {
         try {
-            return new URI(BASE_URL + "?from=20240801&cPage=" + page +
-                    "&rows=50&place=&gpsxfrom=&gpsyfrom=&gpsxto=&gpsyto=&keyword=&sortStdr=1&serviceKey=" + API_KEY);
+            return new URI(BASE_URL + "?realmCode=D000&cPage=" + page +
+                    "&rows=50&sortStdr=1&serviceKey=" + API_KEY);
         } catch (URISyntaxException e) {
             throw new RuntimeException("URL 생성 실패");
         }
