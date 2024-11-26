@@ -33,7 +33,7 @@ public class GCPstorageService implements StorageService<byte[]> {
             // 파일 업로드
             storage.create(blobInfo, data);
             // 모든 사용자에게 읽기 권한 부여
-            storage.createAcl(blobId, Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+//            storage.createAcl(blobId, Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
         } else {
             // 객체가 존재하는 경우, generationMatch를 사용하여 업로드 조건 설정
 //            precondition = Storage.BlobTargetOption.generationMatch(existingBlob.getGeneration());
