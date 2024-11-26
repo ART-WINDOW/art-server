@@ -43,7 +43,6 @@ public class MunwhaExhibitionDetailXMLParser implements XMLParser<MunwhaExhibiti
                     url = getTagValue("placeUrl", element);
                 }
 
-
                 // DTO 생성 후 리스트에 추가
                 MunwhaExhibitionDetailDTO exhibition = MunwhaExhibitionDetailDTO.builder()
                         .price(price)

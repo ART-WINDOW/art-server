@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
+@EnableScheduling
 public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
     private final MuseumService museumService;
