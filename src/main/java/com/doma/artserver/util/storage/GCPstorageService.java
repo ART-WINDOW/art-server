@@ -37,15 +37,15 @@ public class GCPstorageService implements StorageService<byte[]> {
         } else {
             // 객체가 존재하는 경우, generationMatch를 사용하여 업로드 조건 설정
 //            precondition = Storage.BlobTargetOption.generationMatch(existingBlob.getGeneration());
-//            return "https://storage.googleapis.com/" + bucketName + "/" + existingBlob.getBlobId().getName();
-            return storage.get(blobId).getMediaLink();
+            return "https://storage.googleapis.com/" + bucketName + "/" + existingBlob.getBlobId().getName();
+//            return storage.get(blobId).getMediaLink();
         }
 
         // ACL 변경 사항이 적용된 Blob 객체를 다시 가져옴
 //        Blob updatedBlob = storage.get(blobId);
 
-        return storage.get(blobId).getMediaLink();
-//        return "https://storage.googleapis.com/" + bucketName + "/" + fileName;
+//        return storage.get(blobId).getMediaLink();
+        return "https://storage.googleapis.com/" + bucketName + "/" + fileName;
     }
 
     @Override
