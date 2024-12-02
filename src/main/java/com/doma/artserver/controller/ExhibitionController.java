@@ -38,6 +38,14 @@ public class ExhibitionController {
         return ResponseEntity.ok(exhibitions);
     }
 
+    @GetMapping("/area")
+    public ResponseEntity<Page<ExhibitionDTO>> getExhibitionsByArea(@RequestParam String area,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "20") int pageSize) {
+        Page<ExhibitionDTO> exhibitions = museumExhibitionFacade.getExhibitionsByArea(area, page, pageSize);
+
+        return ResponseEntity.ok(exhibitions);
+    }
 
 
 

@@ -8,6 +8,7 @@ import java.util.List;
 public interface ExhibitionService {
     void fetchExhibitions();
     Page<ExhibitionDTO> getExhibitions(int page, int pageSize);
+    Page<ExhibitionDTO> getExhibitionsByArea(String area, int page, int pageSize);
     Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize);
     void updateExhibitions();
     void cacheExhibitions();

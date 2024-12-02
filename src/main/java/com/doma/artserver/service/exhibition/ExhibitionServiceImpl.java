@@ -83,6 +83,13 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     }
 
     @Override
+    public Page<ExhibitionDTO> getExhibitionsByArea(String area, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Exhibition> exhibitions = exhibitionRepository.findByArea(area, pageable);
+        return exhibitions.map(this::convertToDTO);
+    }
+
+    @Override
     public Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Exhibition> exhibitions = exhibitionRepository.findByMuseumIdsAndOrderByStatusAndStartDate(museumIds, pageable);

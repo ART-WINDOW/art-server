@@ -10,4 +10,5 @@ public interface ExhibitionCacheService {
     void updateExhibition(ExhibitionDTO exhibitionDTO);
     void clearCache();
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize);
+    public Page<ExhibitionDTO> getExhibitionsByArea(String area, int page, int pageSize);
 }

@@ -133,6 +133,26 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         return exhibitions;
     }
 
+    @Override
+    public Page<ExhibitionDTO> getExhibitionsByArea(String area, int page, int pageSize) {
+        Page<ExhibitionDTO> exhibitions;
+
+        // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
+        if (!exhibitionCacheService.getExhibitionsByArea(area, page, pageSize).isEmpty()) {
+            exhibitions = exhibitionCacheService.getExhibitionsByArea(area, page, pageSize);
+            for (ExhibitionDTO exhibition : exhibitions) {
+                exhibitionCacheService.saveExhibition(exhibition);
+            }
+        } else {
+            exhibitions = exhibitionService.getExhibitionsByArea(area, page, pageSize);
+            for (ExhibitionDTO exhibition : exhibitions) {
+                exhibitionCacheService.saveExhibition(exhibition);
+            }
+        }
+
+        return exhibitions;
+    }
+
     // 전시 이미지 받아오기
     public byte[] fetchImageData(String imageUrl) {
         HttpGet request = new HttpGet(imageUrl);

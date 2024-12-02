@@ -8,6 +8,7 @@ public interface MuseumExhibitionFacade<T> {
     public void loadData();
     public void updateData();
     Page<T> getExhibitions(int page, int pageSize);
+    Page<T> getExhibitionsByArea(String area, int page, int pageSize);
     Page<T> getMuseums(int page, int pageSize);
     Page<T> getMajorExhibitions(int page, int pageSize);
     public void saveMajorMuseumsByNames();

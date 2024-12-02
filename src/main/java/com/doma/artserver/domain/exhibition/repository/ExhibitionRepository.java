@@ -35,4 +35,5 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
     Page<Exhibition> findByMuseumIdsAndOrderByStatusAndStartDate(@Param("museumIds") List<Long> museumIds, Pageable pageable);
 
 
+    Page<Exhibition> findByArea(String area, Pageable pageable);
 }
