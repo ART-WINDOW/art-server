@@ -47,6 +47,18 @@ public class ExhibitionController {
         return ResponseEntity.ok(exhibitions);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<ExhibitionDTO>> searchExhibitions(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String area,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int pageSize) {
+
+        Page<ExhibitionDTO> results = museumExhibitionFacade.searchExhibitions(
+                keyword, area, page, pageSize);
+        return ResponseEntity.ok(results);
+    }
+
 
 
 

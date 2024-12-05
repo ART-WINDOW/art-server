@@ -192,6 +192,11 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
+    public Page<ExhibitionDTO> searchExhibitions(String keyword, String area, int page, int pageSize) {
+        return exhibitionService.searchExhibitions(keyword, area, page, pageSize);
+    }
+
+    @Override
     public void saveMajorMuseumsByNames() {
         List<String> museumNames = majorMuseumConfig.getNames();
 

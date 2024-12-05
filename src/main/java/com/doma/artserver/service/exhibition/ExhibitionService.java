@@ -10,6 +10,7 @@ public interface ExhibitionService {
     Page<ExhibitionDTO> getExhibitions(int page, int pageSize);
     Page<ExhibitionDTO> getExhibitionsByArea(String area, int page, int pageSize);
     Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize);
+    Page<ExhibitionDTO> searchExhibitions(String keyword, String area, int page, int pageSize);
     void updateExhibitions();
     void cacheExhibitions();
     void clearExhibition();

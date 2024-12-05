@@ -34,6 +34,21 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
             "END")
     Page<Exhibition> findByMuseumIdsAndOrderByStatusAndStartDate(@Param("museumIds") List<Long> museumIds, Pageable pageable);
 
-
     Page<Exhibition> findByArea(String area, Pageable pageable);
+
+    @Query("SELECT e FROM Exhibition e WHERE " +
+            "e.status != 2 AND " +  // 종료된 전시 제외
+            "(:area IS NULL OR e.area = :area) AND " +
+            "(:keyword IS NULL OR " +
+            "LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +  // 전시 제목 검색
+            "LOWER(e.place) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +    // 박물관 이름 검색
+            "ORDER BY " +
+            "CASE WHEN e.status = 1 THEN 1 " +  // ONGOING 먼저
+            "WHEN e.status = 0 THEN 2 END, " +  // SCHEDULED 다음
+            "e.startDate DESC")
+    Page<Exhibition> searchExhibitions(
+            @Param("keyword") String keyword,
+            @Param("area") String area,
+            Pageable pageable
+    );
 }

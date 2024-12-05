@@ -30,6 +30,7 @@ public class ExhibitionDetailServiceImpl {
         for (Exhibition exhibition : exhibitions) {
             List<MunwhaExhibitionDetailDTO> detailList = apiClient.fetchItems(exhibition.getApiId());
                 for (MunwhaExhibitionDetailDTO detail : detailList) {
+                    if (exhibition.getPrice() != null) continue;
                     exhibition.setUrl(detail.getUrl());
                     exhibition.setPrice(detail.getPrice());
                 }

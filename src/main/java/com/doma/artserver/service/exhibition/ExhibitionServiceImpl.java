@@ -96,6 +96,15 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         return exhibitions.map(this::convertToDTO);
     }
 
+    @Override
+    public Page<ExhibitionDTO> searchExhibitions(String keyword, String area, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Exhibition> exhibitions = exhibitionRepository.searchExhibitions(keyword, area, pageable);
+
+        // 결과를 DTO로 변환하여 반환
+        return exhibitions.map(this::convertToDTO);
+    }
+
     private ExhibitionDTO convertToDTO(Exhibition exhibition) {
         return ExhibitionDTO.builder()
                 .id(exhibition.getId())
