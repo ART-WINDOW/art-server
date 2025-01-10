@@ -14,7 +14,7 @@
 * 🔍 **Search** - Exhibition search functionality by museum name or exhibition title
 
 ## 🛠️ Tech Stack
-* **Backend** - Java | Spring Boot | PostgreSQL | JPA | JUnit | JMeter
+* **Backend** - Java | Spring Boot | PostgreSQL | JPA | JUnit | JMeter | Redis
 * **Frontend** - Dart | Flutter
 * **Infrastructure** - GCP | Docker | GitHub Actions | Netlify | Nginx
 
