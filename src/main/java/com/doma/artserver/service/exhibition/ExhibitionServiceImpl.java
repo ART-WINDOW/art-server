@@ -30,16 +30,18 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     private final ApiClient<MunwhaExhibitionDTO> apiClient;
     private final ExhibitionRepository exhibitionRepository;
     private final MuseumRepository museumRepository;
-    private final ExhibitionCacheService exhibitionCacheService;
+//    private final ExhibitionCacheService exhibitionCacheService;
 
     public ExhibitionServiceImpl(ApiClient<MunwhaExhibitionDTO> apiClient,
                                  ExhibitionRepository exhibitionRepository,
-                                 MuseumRepository museumRepository,
-                                 ExhibitionCacheService exhibitionCacheService) {
+                                 MuseumRepository museumRepository
+//                                 ,ExhibitionCacheService exhibitionCacheService
+            )
+     {
         this.apiClient = apiClient;
         this.exhibitionRepository = exhibitionRepository;
         this.museumRepository = museumRepository;
-        this.exhibitionCacheService = exhibitionCacheService;
+//        this.exhibitionCacheService = exhibitionCacheService;
     }
 
     @Override
@@ -73,6 +75,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
             }
             page++;
         }
+        System.out.println("전시 로딩 완료");
     }
 
     @Override
@@ -146,12 +149,12 @@ public class ExhibitionServiceImpl implements ExhibitionService {
 
     @Override
     public void cacheExhibitions() {
-        exhibitionRepository.findAll().forEach(exhibition -> {
-            if (exhibition.getStatus() != ExhibitionStatus.COMPLETED) {
-                ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
-                exhibitionCacheService.saveExhibition(exhibitionDTO);
-            }
-        });
+//        exhibitionRepository.findAll().forEach(exhibition -> {
+//            if (exhibition.getStatus() != ExhibitionStatus.COMPLETED) {
+//                ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
+//                exhibitionCacheService.saveExhibition(exhibitionDTO);
+//            }
+//        });
     }
 
     @Override

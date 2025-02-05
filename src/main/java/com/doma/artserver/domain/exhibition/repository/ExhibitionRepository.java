@@ -14,8 +14,11 @@ import java.util.Optional;
 @Repository
 public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
     Optional<Exhibition> findByApiId(Long apiId);
+
     Optional<Exhibition> findByTitle(String title);
+
     Page<Exhibition> findAll(Pageable pageable);
+
     Page<Exhibition> findAllByOrderByStartDateDesc(Pageable pageable);
 
     // 전시중, 예정 순으로 정렬해서 받아오는 Query (종료된 전시 제외)

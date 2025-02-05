@@ -6,7 +6,7 @@ import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import com.doma.artserver.dto.majormuseum.MajorMuseumDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
-import com.doma.artserver.service.exhibition.ExhibitionCacheService;
+//import com.doma.artserver.service.exhibition.ExhibitionCacheService;
 import com.doma.artserver.service.exhibition.ExhibitionService;
 import com.doma.artserver.service.exhibitiondetail.ExhibitionDetailServiceImpl;
 import com.doma.artserver.service.majormuseum.MajorMuseumService;
@@ -35,14 +35,14 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     private final ExhibitionService exhibitionService;
     private final MajorMuseumService majorMuseumService;
     private final CloseableHttpClient httpClient;
-    private final ExhibitionCacheService exhibitionCacheService;
+//    private final ExhibitionCacheService exhibitionCacheService;
     private final MajorMuseumConfig majorMuseumConfig;
     private final ExhibitionDetailServiceImpl exhibitionDetailService;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
                                       @Qualifier("exhibitionServiceImpl") ExhibitionService exhibitionService,
                                       @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService,
-                                      ExhibitionCacheService exhibitionCacheService,
+//                                      ExhibitionCacheService exhibitionCacheService,
                                       CloseableHttpClient httpClient,
                                       MajorMuseumConfig majorMuseumConfig,
                                       ExhibitionDetailServiceImpl exhibitionDetailService) {
@@ -50,7 +50,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
         this.httpClient = httpClient;
-        this.exhibitionCacheService = exhibitionCacheService;
+//        this.exhibitionCacheService = exhibitionCacheService;
         this.majorMuseumConfig = majorMuseumConfig;
         this.exhibitionDetailService = exhibitionDetailService;
     }
@@ -69,24 +69,24 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         // 5. majorMuseum 갱신
         saveMajorMuseumsByNames();
         // 6. exhibition 데이터 cache에 저장
-        exhibitionCacheService.clearCache();
-        exhibitionService.cacheExhibitions();
+//        exhibitionCacheService.clearCache();
+//        exhibitionService.cacheExhibitions();
         System.out.println("데이터 로드 완료");
     }
 
     @Override
 //    @PostConstruct
-    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(cron = "0 0 0 * * ?")
     public void updateData() {
         // exhibition status 업데이트
         exhibitionService.updateExhibitions();
         // exhibition 데이터 cache에 저장
-        exhibitionCacheService.clearCache();
+//        exhibitionCacheService.clearCache();
         exhibitionService.cacheExhibitions();
     }
 
     public void clearCache() {
-        exhibitionCacheService.clearCache();
+//        exhibitionCacheService.clearCache();
     }
 
     @EventListener
@@ -118,16 +118,21 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         Page<ExhibitionDTO> exhibitions;
 
         // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
-        if (!exhibitionCacheService.getExhibitions(page, pageSize).isEmpty()) {
-            exhibitions = exhibitionCacheService.getExhibitions(page, pageSize);
-            for (ExhibitionDTO exhibition : exhibitions) {
-                exhibitionCacheService.saveExhibition(exhibition);
-            }
-        } else {
-            exhibitions = exhibitionService.getExhibitions(page, pageSize);
-            for (ExhibitionDTO exhibition : exhibitions) {
-                exhibitionCacheService.saveExhibition(exhibition);
-            }
+//        if (!exhibitionCacheService.getExhibitions(page, pageSize).isEmpty()) {
+//            exhibitions = exhibitionCacheService.getExhibitions(page, pageSize);
+//            for (ExhibitionDTO exhibition : exhibitions) {
+//                exhibitionCacheService.saveExhibition(exhibition);
+//            }
+//        } else {
+//            exhibitions = exhibitionService.getExhibitions(page, pageSize);
+//            for (ExhibitionDTO exhibition : exhibitions) {
+//                exhibitionCacheService.saveExhibition(exhibition);
+//            }
+//        }
+
+        exhibitions = exhibitionService.getExhibitions(page, pageSize);
+        for (ExhibitionDTO exhibition : exhibitions) {
+//            exhibitionCacheService.saveExhibition(exhibition);
         }
 
         return exhibitions;
@@ -138,17 +143,19 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         Page<ExhibitionDTO> exhibitions;
 
         // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
-        if (!exhibitionCacheService.getExhibitionsByArea(area, page, pageSize).isEmpty()) {
-            exhibitions = exhibitionCacheService.getExhibitionsByArea(area, page, pageSize);
-            for (ExhibitionDTO exhibition : exhibitions) {
-                exhibitionCacheService.saveExhibition(exhibition);
-            }
-        } else {
-            exhibitions = exhibitionService.getExhibitionsByArea(area, page, pageSize);
-            for (ExhibitionDTO exhibition : exhibitions) {
-                exhibitionCacheService.saveExhibition(exhibition);
-            }
-        }
+//        if (!exhibitionCacheService.getExhibitionsByArea(area, page, pageSize).isEmpty()) {
+//            exhibitions = exhibitionCacheService.getExhibitionsByArea(area, page, pageSize);
+//            for (ExhibitionDTO exhibition : exhibitions) {
+//                exhibitionCacheService.saveExhibition(exhibition);
+//            }
+//        } else {
+//            exhibitions = exhibitionService.getExhibitionsByArea(area, page, pageSize);
+//            for (ExhibitionDTO exhibition : exhibitions) {
+//                exhibitionCacheService.saveExhibition(exhibition);
+//            }
+//        }
+
+        exhibitions = exhibitionService.getExhibitionsByArea(area, page, pageSize);
 
         return exhibitions;
     }

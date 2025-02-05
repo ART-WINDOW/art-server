@@ -7,6 +7,8 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+#    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,16 +24,16 @@ spring:
     storage:
       bucket-name: art-bucket
   data:
-    redis:
-      host: ${REDIS_HOST} # Redis 서버의 호스트 (기본값 localhost)
-      port: 6379       # Redis 서버의 포트 (기본값 6379)
-      lettuce:
-        pool:
-          max-active: 8
-          max-idle: 8
-          min-idle: 0
-          time-between-eviction-runs: 30000ms
-        shutdown-timeout: 100ms
+#    redis:
+#      host: ${REDIS_HOST} # Redis 서버의 호스트 (기본값 localhost)
+#      port: 6379       # Redis 서버의 포트 (기본값 6379)
+#      lettuce:
+#        pool:
+#          max-active: 8
+#          max-idle: 8
+#          min-idle: 0
+#          time-between-eviction-runs: 30000ms
+#        shutdown-timeout: 100ms
 
 major-museums:
   names:

@@ -60,22 +60,24 @@ public class MunwhaExhibitionApiClient implements ApiClient<MunwhaExhibitionDTO>
             throw new RuntimeException("파싱 실패", e);
         }
 
-        return exhibitionList.stream()
+        return exhibitionList;
+
+//        return exhibitionList.stream()
 //                .filter(exhibition -> "미술".equals(exhibition.getRealmName()))
-                .peek(exhibition -> {
-                    byte[] imageData = null;
-                    if (exhibition.getThumbnail() != null) {
-                        imageData = fetchImageData(exhibition.getThumbnail());
-                    }
-                    if (imageData != null) {
-                        // 이미지 URL에서 확장자 추출
-                        String fileExtension = extractFileExtension(exhibition.getThumbnail());
-                        // 확장자가 추가된 파일 이름으로 이미지 업로드
-                        String storageUrl = storageService.uploadFile(exhibition.getTitle() + fileExtension, imageData);
-                        exhibition.setStorageUrl(storageUrl);
-                    }
-                })
-                .collect(Collectors.toList());
+//                .peek(exhibition -> {
+//                    byte[] imageData = null;
+//                    if (exhibition.getThumbnail() != null) {
+//                        imageData = fetchImageData(exhibition.getThumbnail());
+//                    }
+//                    if (imageData != null) {
+//                        // 이미지 URL에서 확장자 추출
+//                        String fileExtension = extractFileExtension(exhibition.getThumbnail());
+//                        // 확장자가 추가된 파일 이름으로 이미지 업로드
+//                        String storageUrl = storageService.uploadFile(exhibition.getTitle() + fileExtension, imageData);
+//                        exhibition.setStorageUrl(storageUrl);
+//                    }
+//                })
+//                .collect(Collectors.toList());
     }
 
     @Override

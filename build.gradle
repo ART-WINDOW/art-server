@@ -70,6 +70,8 @@ dependencies {
     implementation 'org.jboss.logging:jboss-logging:3.4.1.Final'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'io.netty:netty-resolver-dns:4.1.114.Final'
+//    implementation 'com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11' // SQL Server 의존성
+
 
 }
 
