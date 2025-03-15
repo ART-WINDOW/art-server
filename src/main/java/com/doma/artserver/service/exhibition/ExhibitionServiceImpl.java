@@ -10,6 +10,8 @@ import com.doma.artserver.domain.museum.repository.MuseumRepository;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,22 +32,18 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     private final ApiClient<MunwhaExhibitionDTO> apiClient;
     private final ExhibitionRepository exhibitionRepository;
     private final MuseumRepository museumRepository;
-//    private final ExhibitionCacheService exhibitionCacheService;
 
     public ExhibitionServiceImpl(ApiClient<MunwhaExhibitionDTO> apiClient,
                                  ExhibitionRepository exhibitionRepository,
-                                 MuseumRepository museumRepository
-//                                 ,ExhibitionCacheService exhibitionCacheService
-            )
-     {
+                                 MuseumRepository museumRepository) {
         this.apiClient = apiClient;
         this.exhibitionRepository = exhibitionRepository;
         this.museumRepository = museumRepository;
-//        this.exhibitionCacheService = exhibitionCacheService;
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = {"exhibitions", "exhibitionsByArea", "exhibitionsByMuseum", "searchResults"}, allEntries = true)
     public void fetchExhibitions() {
         fetchExhibitions(DEFAULT_MAX_PAGE);
     }
@@ -79,6 +77,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     }
 
     @Override
+    @Cacheable(value = "exhibitions", key = "#page + '-' + #pageSize")
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Exhibition> exhibitions = exhibitionRepository.findAllByStatusAndOrderByStartDate(pageable);
@@ -86,6 +85,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     }
 
     @Override
+    @Cacheable(value = "exhibitionsByArea", key = "#area + '-' + #page + '-' + #pageSize")
     public Page<ExhibitionDTO> getExhibitionsByArea(String area, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Exhibition> exhibitions = exhibitionRepository.findByArea(area, pageable);
@@ -93,6 +93,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     }
 
     @Override
+    @Cacheable(value = "exhibitionsByMuseum", key = "#museumIds.hashCode() + '-' + #page + '-' + #pageSize")
     public Page<ExhibitionDTO> getExhibitionsByMuseums(List<Long> museumIds, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Exhibition> exhibitions = exhibitionRepository.findByMuseumIdsAndOrderByStatusAndStartDate(museumIds, pageable);
@@ -100,11 +101,10 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     }
 
     @Override
+    @Cacheable(value = "searchResults", key = "#keyword + '-' + #area + '-' + #page + '-' + #pageSize")
     public Page<ExhibitionDTO> searchExhibitions(String keyword, String area, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Exhibition> exhibitions = exhibitionRepository.searchExhibitions(keyword, area, pageable);
-
-        // 결과를 DTO로 변환하여 반환
         return exhibitions.map(this::convertToDTO);
     }
 
@@ -127,6 +127,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"exhibitions", "exhibitionsByArea", "exhibitionsByMuseum", "searchResults"}, allEntries = true)
     public void updateExhibitions() {
         List<Exhibition> exhibitions = exhibitionRepository.findAll();
         LocalDate today = LocalDate.now();
@@ -149,15 +150,11 @@ public class ExhibitionServiceImpl implements ExhibitionService {
 
     @Override
     public void cacheExhibitions() {
-//        exhibitionRepository.findAll().forEach(exhibition -> {
-//            if (exhibition.getStatus() != ExhibitionStatus.COMPLETED) {
-//                ExhibitionDTO exhibitionDTO = convertToDTO(exhibition);
-//                exhibitionCacheService.saveExhibition(exhibitionDTO);
-//            }
-//        });
+        // 캐시 관련 로직은 이제 어노테이션으로 처리됨
     }
 
     @Override
+    @CacheEvict(value = {"exhibitions", "exhibitionsByArea", "exhibitionsByMuseum", "searchResults"}, allEntries = true)
     public void clearExhibition() {
         exhibitionRepository.deleteAll();
     }

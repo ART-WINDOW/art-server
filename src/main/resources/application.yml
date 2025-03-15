@@ -18,12 +18,13 @@ spring:
     gonggongkey: ${GONGGONG_API_KEY}
   logging:
     level:
-     com.doma.artserver.controller.ExhibitionController: INFO
+      com.doma.artserver: INFO
+      com.doma.artserver.service.majormuseum: DEBUG
+      com.doma.artserver.service.MuseumExhibitionFacadeImpl: DEBUG
   gcp:
     project-id: ${GCP_PROJECT_ID}
     storage:
       bucket-name: art-bucket
-  data:
 #    redis:
 #      host: ${REDIS_HOST} # Redis 서버의 호스트 (기본값 localhost)
 #      port: 6379       # Redis 서버의 포트 (기본값 6379)

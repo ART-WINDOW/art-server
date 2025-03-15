@@ -6,18 +6,20 @@ import com.doma.artserver.domain.museum.entity.Museum;
 import com.doma.artserver.dto.exhibition.ExhibitionDTO;
 import com.doma.artserver.dto.majormuseum.MajorMuseumDTO;
 import com.doma.artserver.dto.museum.MuseumDTO;
-//import com.doma.artserver.service.exhibition.ExhibitionCacheService;
 import com.doma.artserver.service.exhibition.ExhibitionService;
 import com.doma.artserver.service.exhibitiondetail.ExhibitionDetailServiceImpl;
 import com.doma.artserver.service.majormuseum.MajorMuseumService;
 import com.doma.artserver.service.museum.MuseumService;
-import jakarta.annotation.PostConstruct;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -31,18 +33,17 @@ import java.util.List;
 @EnableScheduling
 public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
 
+    private static final Logger logger = LoggerFactory.getLogger(MuseumExhibitionFacadeImpl.class);
     private final MuseumService museumService;
     private final ExhibitionService exhibitionService;
     private final MajorMuseumService majorMuseumService;
     private final CloseableHttpClient httpClient;
-//    private final ExhibitionCacheService exhibitionCacheService;
     private final MajorMuseumConfig majorMuseumConfig;
     private final ExhibitionDetailServiceImpl exhibitionDetailService;
 
     public MuseumExhibitionFacadeImpl(@Qualifier("museumServiceImpl") MuseumService museumService,
                                       @Qualifier("exhibitionServiceImpl") ExhibitionService exhibitionService,
                                       @Qualifier("majorMuseumServiceImpl") MajorMuseumService majorMuseumService,
-//                                      ExhibitionCacheService exhibitionCacheService,
                                       CloseableHttpClient httpClient,
                                       MajorMuseumConfig majorMuseumConfig,
                                       ExhibitionDetailServiceImpl exhibitionDetailService) {
@@ -50,43 +51,31 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         this.exhibitionService = exhibitionService;
         this.majorMuseumService = majorMuseumService;
         this.httpClient = httpClient;
-//        this.exhibitionCacheService = exhibitionCacheService;
         this.majorMuseumConfig = majorMuseumConfig;
         this.exhibitionDetailService = exhibitionDetailService;
     }
 
     @Override
     @Scheduled(cron = "0 0 4 * * ?")
+    @CacheEvict(value = {"majorExhibitions", "majorMuseums"}, allEntries = true)
     public void loadData() {
-        // 1. 먼저 전체 museum 데이터를 저장
+        logger.info("Starting data load and evicting caches");
         museumService.fetchMuseum();
-        // 2. 저장된 museum 데이터를 기반으로 exhibition 데이터를 저장
         exhibitionService.fetchExhibitions();
-        // 3. exhibition status 업데이트
         exhibitionService.updateExhibitions();
-        // 4. exhibition Detail 데이터 저장
         exhibitionDetailService.fetchExhibitionDetails();
-        // 5. majorMuseum 갱신
         saveMajorMuseumsByNames();
-        // 6. exhibition 데이터 cache에 저장
-//        exhibitionCacheService.clearCache();
-//        exhibitionService.cacheExhibitions();
-        System.out.println("데이터 로드 완료");
+        logger.info("Data load completed and caches evicted");
     }
 
     @Override
-//    @PostConstruct
-//    @Scheduled(cron = "0 0 0 * * ?")
+    @CacheEvict(value = {"majorExhibitions"}, allEntries = true)
     public void updateData() {
-        // exhibition status 업데이트
         exhibitionService.updateExhibitions();
-        // exhibition 데이터 cache에 저장
-//        exhibitionCacheService.clearCache();
-        exhibitionService.cacheExhibitions();
     }
 
     public void clearCache() {
-//        exhibitionCacheService.clearCache();
+        // 캐시 관련 로직 제거
     }
 
     @EventListener
@@ -94,6 +83,7 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         saveMajorMuseumsByNames(event.getNames());
     }
 
+    @CacheEvict(value = {"majorMuseums", "majorExhibitions"}, allEntries = true)
     public void saveMajorMuseumsByNames(List<String> museumNames) {
         List<Museum> museums = museumService.findMuseumsByName(museumNames);
 
@@ -112,52 +102,59 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         }
     }
 
-
     @Override
+    @Cacheable(value = "exhibitions", key = "#page + '-' + #pageSize")
     public Page<ExhibitionDTO> getExhibitions(int page, int pageSize) {
-        Page<ExhibitionDTO> exhibitions;
-
-        // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
-//        if (!exhibitionCacheService.getExhibitions(page, pageSize).isEmpty()) {
-//            exhibitions = exhibitionCacheService.getExhibitions(page, pageSize);
-//            for (ExhibitionDTO exhibition : exhibitions) {
-//                exhibitionCacheService.saveExhibition(exhibition);
-//            }
-//        } else {
-//            exhibitions = exhibitionService.getExhibitions(page, pageSize);
-//            for (ExhibitionDTO exhibition : exhibitions) {
-//                exhibitionCacheService.saveExhibition(exhibition);
-//            }
-//        }
-
-        exhibitions = exhibitionService.getExhibitions(page, pageSize);
-        for (ExhibitionDTO exhibition : exhibitions) {
-//            exhibitionCacheService.saveExhibition(exhibition);
-        }
-
-        return exhibitions;
+        return exhibitionService.getExhibitions(page, pageSize);
     }
 
     @Override
+    @Cacheable(value = "exhibitionsByArea", key = "#area + '-' + #page + '-' + #pageSize")
     public Page<ExhibitionDTO> getExhibitionsByArea(String area, int page, int pageSize) {
-        Page<ExhibitionDTO> exhibitions;
+        return exhibitionService.getExhibitionsByArea(area, page, pageSize);
+    }
 
-        // cache에 저장된 전시 목록이 있으면 cache에서 가져오고, 없으면 DB에서 가져와서 cache에 저장
-//        if (!exhibitionCacheService.getExhibitionsByArea(area, page, pageSize).isEmpty()) {
-//            exhibitions = exhibitionCacheService.getExhibitionsByArea(area, page, pageSize);
-//            for (ExhibitionDTO exhibition : exhibitions) {
-//                exhibitionCacheService.saveExhibition(exhibition);
-//            }
-//        } else {
-//            exhibitions = exhibitionService.getExhibitionsByArea(area, page, pageSize);
-//            for (ExhibitionDTO exhibition : exhibitions) {
-//                exhibitionCacheService.saveExhibition(exhibition);
-//            }
-//        }
+    @Override
+    @Cacheable(value = "majorExhibitions", key = "#page + '-' + #pageSize")
+    public Page<ExhibitionDTO> getMajorExhibitions(int page, int pageSize) {
+        logger.info("Fetching major exhibitions from database for page: {}, size: {}", page, pageSize);
+        List<MajorMuseumDTO> majorMuseums = majorMuseumService.getMajorMuseums();
 
-        exhibitions = exhibitionService.getExhibitionsByArea(area, page, pageSize);
+        List<Long> museumIds = majorMuseums.stream()
+                .map(MajorMuseumDTO::getMuseumId)
+                .toList();
 
-        return exhibitions;
+        return exhibitionService.getExhibitionsByMuseums(museumIds, page, pageSize);
+    }
+
+    @Override
+    @Cacheable(value = "searchResults", key = "#keyword + '-' + #area + '-' + #page + '-' + #pageSize")
+    public Page<ExhibitionDTO> searchExhibitions(String keyword, String area, int page, int pageSize) {
+        logger.info("Searching exhibitions with keyword: {}, area: {}, page: {}, size: {}", keyword, area, page, pageSize);
+        return exhibitionService.searchExhibitions(keyword, area, page, pageSize);
+    }
+
+    @Override
+    @CacheEvict(value = {"majorMuseums", "majorExhibitions"}, allEntries = true)
+    public void saveMajorMuseumsByNames() {
+        logger.info("Saving major museums and evicting caches");
+        List<String> museumNames = majorMuseumConfig.getNames();
+        List<Museum> museums = museumService.findMuseumsByName(museumNames);
+
+        for (Museum museum : museums) {
+            MajorMuseum majorMuseum = MajorMuseum.builder()
+                    .name(museum.getName())
+                    .area(museum.getArea())
+                    .gpsX(museum.getGpsX())
+                    .gpsY(museum.getGpsY())
+                    .contactInfo(museum.getContactInfo())
+                    .website(museum.getWebsite())
+                    .museumId(museum.getId())
+                    .build();
+
+            majorMuseumService.saveMajorMuseum(majorMuseum);
+        }
+        logger.info("Major museums saved and caches evicted");
     }
 
     // 전시 이미지 받아오기
@@ -179,53 +176,10 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
     }
 
     @Override
+    @Cacheable(value = "museums", key = "#page + '-' + #pageSize")
     public Page<MuseumDTO> getMuseums(int page, int pageSize) {
         return museumService.getMuseums(page, pageSize);
     }
-
-    @Override
-    public Page<ExhibitionDTO> getMajorExhibitions(int page, int pageSize) {
-        List<MajorMuseumDTO> majorMuseums = majorMuseumService.getMajorMuseums();
-
-        // 각 MajorMuseumDTO의 museumId를 리스트로 변환
-        List<Long> museumIds = majorMuseums.stream()
-                .map(MajorMuseumDTO::getMuseumId)
-                .toList();
-
-        // museumIds를 사용하여 전시 목록을 가져옴
-        Page<ExhibitionDTO> exhibitions = exhibitionService.getExhibitionsByMuseums(museumIds, page, pageSize);
-
-        return exhibitions;
-    }
-
-    @Override
-    public Page<ExhibitionDTO> searchExhibitions(String keyword, String area, int page, int pageSize) {
-        return exhibitionService.searchExhibitions(keyword, area, page, pageSize);
-    }
-
-    @Override
-    public void saveMajorMuseumsByNames() {
-        List<String> museumNames = majorMuseumConfig.getNames();
-
-        // 1. Museum 이름 리스트로 검색
-        List<Museum> museums = museumService.findMuseumsByName(museumNames);
-
-        // 2. 검색된 각 Museum 객체를 기반으로 MajorMuseum 생성 및 저장
-        for (Museum museum : museums) {
-            MajorMuseum majorMuseum = MajorMuseum.builder()
-                    .name(museum.getName())
-                    .area(museum.getArea())
-                    .gpsX(museum.getGpsX())
-                    .gpsY(museum.getGpsY())
-                    .contactInfo(museum.getContactInfo())
-                    .website(museum.getWebsite())
-                    .museumId(museum.getId())
-                    .build();
-
-            majorMuseumService.saveMajorMuseum(majorMuseum);
-        }
-    }
-
 
     @Override
     public Object getExhibitionById(Long id) {
@@ -237,9 +191,10 @@ public class MuseumExhibitionFacadeImpl implements MuseumExhibitionFacade {
         return null;
     }
 
+    @Override
+    @CacheEvict(value = {"exhibitions", "exhibitionsByArea", "exhibitionsByMuseum", "searchResults", "majorExhibitions"}, allEntries = true)
     public void clearExhibition() {
+        logger.info("Clearing all exhibitions and evicting all related caches");
         exhibitionService.clearExhibition();
     }
-
-
 }
