@@ -57,5 +57,4 @@ jobs:
             -e GYEONGGI_API_KEY=${{ secrets.GYEONGGI_API_KEY }} \
             -e GONGGONG_API_KEY=${{ secrets.GONGGONG_API_KEY }} \
             -e GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} \
-            -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
             ${{ secrets.DOCKER_HUB_USERNAME }}/art-server:latest
