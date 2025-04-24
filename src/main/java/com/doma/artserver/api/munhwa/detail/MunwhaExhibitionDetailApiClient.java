@@ -29,7 +29,7 @@ public class MunwhaExhibitionDetailApiClient implements ApiClient<MunwhaExhibiti
 
     @Value("${spring.api.gonggongkey}")
     private String API_KEY;
-    private static final String BASE_URL = "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/?";
+    private static final String BASE_URL = "https://apis.data.go.kr/B553457/nopenapi/rest/publicperformancedisplays/detail";
 
     @Override
     public List<MunwhaExhibitionDetailDTO> fetchItems(int page) {

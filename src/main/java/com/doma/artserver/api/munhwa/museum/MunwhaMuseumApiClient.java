@@ -20,7 +20,7 @@ public class MunwhaMuseumApiClient implements ApiClient<MunwhaMuseumDTO> {
 
     @Value("${spring.api.gonggongkey}")
     private String API_KEY;
-    private static final String BASE_URL = "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period";
+    private static final String BASE_URL = "https://apis.data.go.kr/B553457/nopenapi/rest/publicperformancedisplays/period";
 
     public MunwhaMuseumApiClient(RestTemplate restTemplate,
                                  XMLParser<MunwhaMuseumDTO> xmlParser) {
