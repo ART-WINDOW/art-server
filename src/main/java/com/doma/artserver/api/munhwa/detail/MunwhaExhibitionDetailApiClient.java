@@ -67,7 +67,7 @@ public class MunwhaExhibitionDetailApiClient implements ApiClient<MunwhaExhibiti
     @Override
     public URI generateUrl(Long apiId) {
         try {
-            return new URI(BASE_URL + "serviceKey=" + API_KEY + "&seq=" + apiId);
+            return new URI(BASE_URL + "?serviceKey=" + API_KEY + "&seq=" + apiId);
         } catch (URISyntaxException e) {
             throw new RuntimeException("URL 생성 실패");
         }
