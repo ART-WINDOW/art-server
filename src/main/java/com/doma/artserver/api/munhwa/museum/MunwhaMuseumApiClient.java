@@ -49,9 +49,9 @@ public class MunwhaMuseumApiClient implements ApiClient<MunwhaMuseumDTO> {
             throw new RuntimeException("파싱 실패", e);
         }
 
-        // Stream API를 이용하여 'realmName'이 "미술"인 항목 필터링
+        // Stream API를 이용하여 'realmName'이 "전시"인 항목 필터링
         return museumList.stream()
-                .filter(museum -> "미술".equals(museum.getRealmName()))
+                .filter(museum -> "전시".equals(museum.getRealmName()))
                 .collect(Collectors.toList());
     }
 
